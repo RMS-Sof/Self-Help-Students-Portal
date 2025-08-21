@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Help Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+        }
+
+        .card.research::before {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .card.stress::before {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+        }
+
+        .card.quiz::before {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+
+        .card.admin::before {
+            background: linear-gradient(135deg, #43e97b, #38f9d7);
+        }
+
+        .card.timetable::before {
+            background: linear-gradient(135deg, #fa709a, #fee140);
+        }
+
+        .card.calendar::before {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        }
+
+        .card-header {
+            margin-bottom: 25px;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .card.research .card-title {
+            color: #667eea;
+        }
+
+        .card.stress .card-title {
+            color: #f5576c;
+        }
+
+        .card.quiz .card-title {
+            color: #4facfe;
+        }
+
+        .card.admin .card-title {
+            color: #43e97b;
+        }
+
+        .card.timetable .card-title {
+            color: #fa709a;
+        }
+
+        .card.calendar .card-title {
+            color: #a8edea;
+        }
+
+        .card-description {
+            color: #718096;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .links-section {
+            flex-grow: 1;
+        }
+
+        .links-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+
+        .link-item {
+            display: block;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #4a5568;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .link-item:hover {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+            transform: translateX(5px);
+        }
+
+        .card.research .link-item:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .card.stress .link-item:hover {
+            border-color: #f5576c;
+            color: #f5576c;
+        }
+
+        .card.quiz .link-item:hover {
+            border-color: #4facfe;
+            color: #4facfe;
+        }
+
+        .card.admin .link-item:hover {
+            border-color: #43e97b;
+            color: #43e97b;
+        }
+
+        .card.timetable .link-item:hover {
+            border-color: #fa709a;
+            color: #fa709a;
+        }
+
+        .card.calendar .link-item:hover {
+            border-color: #a8edea;
+            color: #a8edea;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.1;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Students Self-Help Portal</h1>
+            <p>Your gateway to academic success and campus life</p>
+        </div>
+
+        <div class="cards-grid">
+            <!-- Research & Innovation Card -->
+            <div class="card research">
+                <div class="icon">🔬</div>
+                <div class="card-header">
+                    <h2 class="card-title">Research & Innovation</h2>
+                    <p class="card-description">Explore undergrad level research concepts like  research methodology, IPR and Patents to fuel your academic curiosity.</p>
+                </div>
+                <div class="links-section">
+                    <h3 class="links-title">Quick Access Links:</h3>
+                    <a href="https://www.youtube.com/watch?v=afrEslTjm0Y&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=8" class="link-item">Research Methodolgy</a>
+                    <a href="https://www.youtube.com/watch?v=D_sQBHPXL5w&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=13" class="link-item">IPR and Patents</a>
+                    <a href="https://www.youtube.com/watch?v=4eBQ1Xhaxrg&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=11" class="link-item">Using AI in your research</a>
+                    <a href="https://www.youtube.com/watch?v=oARZbwWHi8I&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=2" class="link-item">Research with study</a>
+                </div>
+            </div>
+
+            <!-- Stress Management Card -->
+            <div class="card stress">
+                <div class="icon">🧘</div>
+                <div class="card-header">
+                    <h2 class="card-title">Stress Management</h2>
+                    <p class="card-description">Access mental health resources, counseling services, and wellness programs for a balanced student life.</p>
+                </div>
+                <div class="links-section">
+                    <h3 class="links-title">Wellness Resources:</h3>
+                    <a href="https://www.youtube.com/watch?v=NRft1DVXBcI&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=17" class="link-item">Level-1 Counselling</a>
+                    <a href="https://www.youtube.com/watch?v=pKEWPRawEQg&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=26" class="link-item">Level-2 Counselling</a>
+                    <a href="https://www.youtube.com/watch?v=QtWB5XNjcig&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=5" class="link-item">Level-3 Counselling</a>
+                    <a href="https://www.youtube.com/watch?v=iQGEd_oeF7s&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=14" class="link-item">Mental Health</a>
+                </div>
+            </div>
+
+            <!-- Online Quizzes Card -->
+            <div class="card quiz">
+                <div class="icon">🧠</div>
+                <div class="card-header">
+                    <h2 class="card-title">Online Quizzes</h2>
+                    <p class="card-description">Practice with interactive quizzes, mock tests, and skill assessments across various subjects.</p>
+                </div>
+                <div class="links-section">
+                    <h3 class="links-title">Quiz Platforms:</h3>
+                    <a href="https://rms-sof.github.io/TOC-Quiz/" class="link-item">Theory of Computation</a>
+                    <a href="https://rms-sof.github.io/DLQuiz/" class="link-item">Deep Learning</a>
+                    <a href="https://rms-sof.github.io/SmCQuiz/" class="link-item">Smart Computing</a>
+                    <a href="https://rms-sof.github.io/PythonQuiz/" class="link-item">Python Programming</a>
+		    <a href="https://rms-sof.github.io/DSQuiz/" class="link-item">Distributed Systems</a>
+                    <a href="https://rms-sof.github.io/ISRQuiz/" class="link-item">Information Storage & Retrieval</a>
+	   	    <a href="https://rms-sof.github.io/SoCQuiz/" class="link-item">Social Computing</a>
+	
+
+                </div>
+            </div>
+
+            <!-- Employability Card -->
+            <div class="card admin">
+                <div class="icon">⚡</div>
+                <div class="card-header">
+                    <h2 class="card-title">Enhancing Employability</h2>
+                    <p class="card-description">Improve your chances of getting a campus placement.Streamline your skills and attitude.</p>
+                </div>
+                <div class="links-section">
+                    <h3 class="links-title">Employability</h3>
+                    <a href="https://www.youtube.com/watch?v=riHjSprhdz8&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=29" class="link-item">Technical Brush-up</a>
+                    <a href="https://www.youtube.com/watch?v=zGmS-wy3ZpI&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=9" class="link-item">Capacity Building</a>
+                    <a href="https://www.youtube.com/watch?v=ZUaYFVYit90&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=24" class="link-item">Understand Employability</a>
+                    <a href="https://www.youtube.com/watch?v=9PIIA97XQjY&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=16" class="link-item">Cracking Technical Interview</a>
+                    <a href="https://www.youtube.com/watch?v=U6tJLRJUwU8&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=7" class="link-item">Becoming Employable</a>
+                    <a href="https://www.youtube.com/watch?v=zc4HH5Grbc0&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=21" class="link-item">Alumni Advice</a>
+
+
+                </div>
+            </div>
+
+            <!-- Digital well-being -->
+            <div class="card timetable">
+                <div class="icon">📅</div>
+                <div class="card-header">
+                    <h2 class="card-title">Digital Wellness</h2>
+                    <p class="card-description">Stay organized with your life. Learn the ways to be more productive.</p>
+                </div>
+                <div class="links-section">
+                    <h3 class="links-title">Digital Wellness</h3>
+                    <a href="https://www.youtube.com/watch?v=XRp7FDvkwPk&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=18" class="link-item">Digital Fitness</a>
+                    <a href="https://www.youtube.com/watch?v=zamxUKQhhwM&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=25" class="link-item">What is excess?</a>
+                    <a href="https://www.youtube.com/watch?v=HRoIiWz2oE4&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=15" class="link-item">Good Habits</a>
+                    
+                </div>
+            </div>
+
+            <!-- Enhance yourself -->
+            <div class="card calendar">
+                <div class="icon">🎪</div>
+                <div class="card-header">
+                    <h2 class="card-title">Enhance Yourself</h2>
+                    <p class="card-description">Discover yourself. Know learning and knowledge retention methods to build growth mindset.</p>
+                </div>
+                <div class="links-section">
+                    <h3 class="links-title">Campus Life:</h3>
+                    <a href="https://www.youtube.com/watch?v=lwSOI0VlkF8&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=1" class="link-item">Importance of Regularity</a>
+                    <a href="https://www.youtube.com/watch?v=0MkmHBXSY1c&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=3" class="link-item">How to make study interesting?</a>
+                    <a href="https://www.youtube.com/watch?v=8kumlKbqSEM&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=12" class="link-item">Thinking Process</a>
+                    <a href="https://www.youtube.com/watch?v=IMspKgje554&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=6" class="link-item">Learning Styles</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
