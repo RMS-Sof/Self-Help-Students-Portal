@@ -284,6 +284,96 @@ html {
     scroll-behavior: smooth;
 }
 
+/* ===================== CARD-SPECIFIC DARK SHADES ===================== */
+
+/* Timetable — Deep Indigo */
+.card.timetable {
+    background: linear-gradient(160deg, #1a1f3d, #0f1328);
+    box-shadow:
+        0 22px 55px rgba(0,0,0,0.85),
+        0 0 28px rgba(110,130,255,0.35);
+}
+
+/* Stress — Dark Plum */
+.card.stress {
+    background: linear-gradient(160deg, #2a162f, #160b1a);
+    box-shadow:
+        0 22px 55px rgba(0,0,0,0.85),
+        0 0 28px rgba(200,120,255,0.35);
+}
+
+/* Quiz — Midnight Teal */
+.card.quiz {
+    background: linear-gradient(160deg, #0f2a2d, #07171a);
+    box-shadow:
+        0 22px 55px rgba(0,0,0,0.85),
+        0 0 28px rgba(120,220,255,0.35);
+}
+
+/* Calendar — Dark Violet */
+.card.calendar {
+    background: linear-gradient(160deg, #241735, #130b1f);
+    box-shadow:
+        0 22px 55px rgba(0,0,0,0.85),
+        0 0 28px rgba(190,140,255,0.35);
+}
+
+/* Research / Admin — Deep Emerald */
+.card.research,
+.card.admin {
+    background: linear-gradient(160deg, #0f2d23, #081713);
+    box-shadow:
+        0 22px 55px rgba(0,0,0,0.85),
+        0 0 28px rgba(120,255,200,0.35);
+}
+/* ===================== CONTROLLED HOVER GLOW ===================== */
+
+.card.timetable:hover {
+    box-shadow:
+        0 35px 75px rgba(0,0,0,0.9),
+        0 0 40px rgba(120,140,255,0.6);
+}
+
+.card.stress:hover {
+    box-shadow:
+        0 35px 75px rgba(0,0,0,0.9),
+        0 0 40px rgba(210,140,255,0.6);
+}
+
+.card.quiz:hover {
+    box-shadow:
+        0 35px 75px rgba(0,0,0,0.9),
+        0 0 40px rgba(140,220,255,0.6);
+}
+
+.card.calendar:hover {
+    box-shadow:
+        0 35px 75px rgba(0,0,0,0.9),
+        0 0 40px rgba(200,160,255,0.6);
+}
+
+.card.research:hover,
+.card.admin:hover {
+    box-shadow:
+        0 35px 75px rgba(0,0,0,0.9),
+        0 0 40px rgba(150,255,210,0.6);
+}
+/* ===================== TEXT CONTRAST SAFETY ===================== */
+
+.card-title {
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(255,255,255,0.35);
+}
+
+.card-description,
+.links-title {
+    color: #d8ddff;
+}
+
+.link-item {
+    color: #f3f6ff;
+}
+
 </style>
 </head>
 
@@ -818,7 +908,43 @@ document.getElementById("searchInput").addEventListener("keyup", function () {
         card.style.display = (match || query === "") ? "flex" : "none";
     });
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const KEY = "ecosystem_page_hits";
+    let hits = localStorage.getItem(KEY);
+
+    if (!hits) hits = 0;
+    hits = parseInt(hits, 10) + 1;
+
+    localStorage.setItem(KEY, hits);
+
+    const el = document.getElementById("hitCount");
+    if (el) el.textContent = hits;
+});
+
 </script>
+<!-- ===================== FOOTER ===================== -->
+<footer style="
+    margin-top: 60px;
+    padding: 25px 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #cfd6ff;
+    background: linear-gradient(180deg, #0e132e, #080b1a);
+    border-top: 1px solid rgba(150,170,255,0.25);
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
+">
+    <div style="margin-bottom: 8px;">
+        © 2026 <strong>EcoSystem</strong> | Designed by Prof. Rahul M. Samant | HOD-IT , NBNSTIC.
+    </div>
+
+    <div style="margin-bottom: 8px; opacity: 0.85;">
+        Designed for mindful learning, academic planning, and student well-being
+    </div>
+
+    <div style="opacity: 0.75; font-size: 0.85rem;">
+        <strong>Welcome back! This is your visit number : <span id="hitCount">–</span></strong>
+    </div>
+</footer>
 
 </body>
 </html>
