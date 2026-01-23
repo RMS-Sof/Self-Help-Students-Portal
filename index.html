@@ -3,895 +3,761 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Help Portal</title>
+<title>Student Help Portal | EcoSystem 2026</title>
 
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ===================== RESET & CORE ===================== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    padding: 20px;
-}
-
-.container { max-width: 1200px; margin: 0 auto; }
-
-.header {
-    text-align: center;
-    margin-bottom: 20px;
-    color: white;
-}
-
-.header h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-}
-
-.header p {
-    font-size: 1.2rem;
-    opacity: 0.9;
-}
-
-/* ---------- SEARCH ---------- */
-.search-container {
-    display: flex;
-    justify-content: center;
-    margin: 30px 0;
-}
-
-#searchInput {
-    width: 100%;
-    max-width: 700px;
-    padding: 14px 18px;
-    border-radius: 14px;
-    border: 2px solid #e2e8f0;
-    font-size: 1rem;
-    outline: none;
-}
-
-#searchInput:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102,126,234,0.25);
-}
-
-/* ---------- CARDS ---------- */
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 30px;
-}
-
-.card {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    min-height: 300px;
-    display: flex;
-    flex-direction: column;
-}
-
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 8px;
-    border-radius: 20px 20px 0 0;
-}
-
-.card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 30px 60px rgba(0,0,0,0.15);
-}
-
-.card.research::before { background: linear-gradient(135deg, #667eea, #764ba2); }
-.card.stress::before { background: linear-gradient(135deg, #f093fb, #f5576c); }
-.card.quiz::before { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-.card.admin::before { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-.card.timetable::before { background: linear-gradient(135deg, #fa709a, #fee140); }
-.card.calendar::before { background: linear-gradient(135deg, #667eea, #fed6e3); }
-
-.card-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-.card-description {
-    color: #718096;
-    margin-bottom: 20px;
-}
-
-.links-title {
-    font-weight: 600;
-    margin-bottom: 10px;
-}
-
-.link-item {
-    display: block;
-    padding: 12px 16px;
-    margin-bottom: 8px;
-    background: #f7fafc;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    text-decoration: none;
-    color: #4a5568;
-}
-
-.link-item:hover {
-    background: #edf2f7;
-    transform: translateX(4px);
-}
-
-.icon {
-    font-size: 3rem;
-    opacity: 0.12;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-@media (max-width: 768px) {
-    .header h1 { font-size: 2rem; }
-    .cards-grid { grid-template-columns: 1fr; }
-}
-
-/* ===================== GLOBAL DARK THEME ===================== */
-
-body {
-    background: radial-gradient(circle at top,
-        #1a1f3c 0%,
-        #0b0e1a 55%,
-        #06080f 100%);
-    color: #e8ecff;
-    transition: background 0.8s ease, color 0.6s ease;
-}
-
-/* ===================== HEADERS ===================== */
-
-h1, h2, h3 {
-    color: #f2f5ff;
-    text-shadow: 0 0 18px rgba(120,140,255,0.35);
-}
-
-/* ===================== SEARCH BAR ===================== */
-
-#searchInput {
-    background: linear-gradient(180deg, #14182f, #0e1224);
-    color: #ffffff;
-    border: 1px solid rgba(140,160,255,0.25);
-    box-shadow:
-        inset 0 0 12px rgba(0,0,0,0.7),
-        0 0 18px rgba(120,150,255,0.25);
-    transition: box-shadow 0.4s ease, transform 0.3s ease;
-}
-
-#searchInput:focus {
-    box-shadow:
-        inset 0 0 16px rgba(0,0,0,0.8),
-        0 0 26px rgba(140,180,255,0.5);
-}
-
-#searchInput::placeholder {
-    color: #9aa3ff;
-}
-
-/* ===================== CARD GRID ===================== */
-
-.card {
-    background: linear-gradient(160deg,
-        #1b2142,
-        #111632);
-    border: 1px solid rgba(150,170,255,0.2);
-    box-shadow:
-        0 20px 50px rgba(0,0,0,0.75),
-        inset 0 1px 0 rgba(255,255,255,0.05);
-    backdrop-filter: blur(6px);
-    transition:
-        transform 0.6s cubic-bezier(.2,.8,.2,1),
-        box-shadow 0.6s ease,
-        filter 0.6s ease;
-}
-
-/* Hover = lift + glow */
-.card:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow:
-        0 30px 70px rgba(0,0,0,0.85),
-        0 0 35px rgba(130,160,255,0.55);
-    filter: saturate(1.25);
-}
-
-/* ===================== CARD TOP COLOR STRIP ===================== */
-
-.card::before {
-    opacity: 0.9;
-    filter: saturate(1.4) brightness(1.25);
-    box-shadow: 0 0 25px rgba(255,255,255,0.35);
-}
-
-/* ===================== CARD CONTENT ===================== */
-
-.card-title {
-    color: #ffffff;
-    text-shadow: 0 0 14px rgba(150,170,255,0.45);
-}
-
-.card-description {
-    color: #c4ccff;
-}
-
-/* ===================== LINKS ===================== */
-
-.link-item {
-    background: linear-gradient(180deg, #1a2044, #0f1433);
-    border: 1px solid rgba(150,170,255,0.25);
-    color: #eef1ff;
-    box-shadow: 0 0 16px rgba(120,150,255,0.25);
-    transition:
-        transform 0.4s ease,
-        box-shadow 0.4s ease,
-        background 0.4s ease;
-}
-
-.link-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 0 28px rgba(140,180,255,0.6);
-    background: linear-gradient(180deg, #222a66, #141b44);
-}
-
-/* ===================== ICONS ===================== */
-
-.icon {
-    opacity: 0.2;
-    filter: drop-shadow(0 0 18px rgba(140,170,255,0.5));
-}
-
-/* ===================== ANALYTICS PANEL ===================== */
-
-#analytics {
-    background: linear-gradient(180deg, #1c2352, #12183a);
-    border: 1px solid rgba(150,170,255,0.25);
-    color: #ffffff;
-    box-shadow: 0 0 30px rgba(120,150,255,0.35);
-}
-
-/* ===================== SMOOTH ENTRY MOTION ===================== */
-
-.card {
-    animation: fadeUp 0.9s ease both;
-}
-
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(25px);
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: radial-gradient(circle at top, #1a1f3c 0%, #0b0e1a 55%, #06080f 100%);
+        color: #e8ecff;
+        min-height: 100vh;
+        padding: 20px;
+        transition: background 0.8s ease, color 0.6s ease;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    .container { max-width: 1200px; margin: 0 auto; }
+    html { scroll-behavior: smooth; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ===================== HEADER ===================== */
+    .header { text-align: center; margin-bottom: 30px; }
+    
+    .header h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #f2f5ff;
+        text-shadow: 0 0 18px rgba(120,140,255,0.35);
     }
-}
+    .header p { font-size: 1.1rem; opacity: 0.9; color: #c4ccff; }
 
-/* ===================== SCROLL POLISH ===================== */
+    /* ===================== SEARCH WITH MIC ===================== */
+    .search-container {
+        display: flex;
+        justify-content: center;
+        margin: 30px 0;
+    }
 
-html {
-    scroll-behavior: smooth;
-}
+    /* Wrapper needed to position the mic icon inside the input */
+    .search-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 700px;
+    }
 
+    #searchInput {
+        width: 100%;
+        padding: 14px 50px 14px 18px; /* Right padding increases to make room for mic */
+        border-radius: 14px;
+        background: linear-gradient(180deg, #14182f, #0e1224);
+        color: #ffffff;
+        border: 1px solid rgba(140,160,255,0.25);
+        font-size: 1rem;
+        outline: none;
+        box-shadow: inset 0 0 12px rgba(0,0,0,0.7), 0 0 18px rgba(120,150,255,0.25);
+        transition: box-shadow 0.4s ease, transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    #searchInput:focus {
+        box-shadow: inset 0 0 16px rgba(0,0,0,0.8), 0 0 26px rgba(140,180,255,0.5);
+        border-color: rgba(140,160,255,0.6);
+    }
+
+    #searchInput.listening-mode {
+        border-color: #ff4b4b;
+        box-shadow: 0 0 15px rgba(255, 75, 75, 0.3);
+    }
+
+    #searchInput::placeholder { color: #9aa3ff; }
+
+    /* Microphone Button Styling */
+    .mic-btn {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #9aa3ff;
+        cursor: pointer;
+        transition: color 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        border-radius: 50%;
+    }
+
+    .mic-btn:hover { color: #ffffff; background: rgba(255,255,255,0.05); }
+
+    /* Animation when listening */
+    .mic-btn.listening {
+        color: #ff4b4b;
+        animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+        0% { transform: translateY(-50%) scale(1); text-shadow: 0 0 0 rgba(255, 75, 75, 0.7); }
+        50% { transform: translateY(-50%) scale(1.2); text-shadow: 0 0 15px rgba(255, 75, 75, 0.5); }
+        100% { transform: translateY(-50%) scale(1); text-shadow: 0 0 0 rgba(255, 75, 75, 0); }
+    }
+
+    /* ===================== GRID LAYOUT ===================== */
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 30px;
+    }
+
+    /* ===================== CARD COMPONENT ===================== */
+    .card {
+        background: linear-gradient(160deg, #1b2142, #111632);
+        border: 1px solid rgba(150,170,255,0.2);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.05);
+        backdrop-filter: blur(6px);
+        transition: transform 0.6s cubic-bezier(.2,.8,.2,1), box-shadow 0.6s ease, filter 0.6s ease;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        animation: fadeUp 0.9s ease both;
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(25px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Top Color Strip */
+    .card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 8px;
+        border-radius: 20px 20px 0 0;
+        opacity: 0.9;
+        filter: saturate(1.4) brightness(1.25);
+        box-shadow: 0 0 25px rgba(255,255,255,0.35);
+    }
+
+    /* Card Variant Colors */
+    .card.research::before { background: linear-gradient(135deg, #667eea, #764ba2); }
+    .card.stress::before { background: linear-gradient(135deg, #f093fb, #f5576c); }
+    .card.quiz::before { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+    .card.admin::before { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+    .card.timetable::before { background: linear-gradient(135deg, #fa709a, #fee140); }
+    .card.calendar::before { background: linear-gradient(135deg, #667eea, #fed6e3); }
+
+    .card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 30px 70px rgba(0,0,0,0.85), 0 0 35px rgba(130,160,255,0.55);
+        filter: saturate(1.25);
+    }
+
+    .card-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #ffffff;
+        text-shadow: 0 0 14px rgba(150,170,255,0.45);
+    }
+
+    .card-description {
+        color: #c4ccff;
+        margin-bottom: 20px;
+    }
+
+    .icon {
+        font-size: 3rem;
+        opacity: 0.12;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        filter: drop-shadow(0 0 18px rgba(140,170,255,0.5));
+    }
+
+    /* ===================== LINKS SECTION ===================== */
+    .links-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #f2f5ff;
+        text-shadow: 0 0 18px rgba(120,140,255,0.35);
+    }
+
+    .link-item {
+        display: block;
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        background: linear-gradient(180deg, #1a2044, #0f1433);
+        border: 1px solid rgba(150,170,255,0.25);
+        border-radius: 12px;
+        color: #eef1ff;
+        box-shadow: 0 0 16px rgba(120,150,255,0.25);
+        transition: transform 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+    }
+
+    .link-item:hover {
+        transform: translateX(4px);
+        box-shadow: 0 0 28px rgba(140,180,255,0.6);
+        background: linear-gradient(180deg, #222a66, #141b44);
+    }
+
+    /* ===================== MEDIA QUERIES ===================== */
+    @media (max-width: 768px) {
+        .header h1 { font-size: 2rem; }
+        .cards-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ===================== FOOTER ===================== */
+    footer {
+        margin-top: 60px;
+        padding: 25px 20px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #cfd6ff;
+        background: linear-gradient(180deg, #0e132e, #080b1a);
+        border-top: 1px solid rgba(150,170,255,0.25);
+        box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
+    }
 </style>
 </head>
 
 <body>
 <div class="container">
 
-<div class="header">
-<h1>EcoSystem 2026 | Prof. Rahul M. Samant</h1>
-<p><strong>150+</strong> Mindful Consultations | <strong>100+</strong> Academic Tools | <strong>50+</strong> Mock Exams</p>
+    <div class="header">
+        <h1>EcoSystem 2026 | Prof. Rahul M. Samant</h1>
+        <p><strong>150+</strong> Mindful Consultations | <strong>100+</strong> Academic Tools | <strong>50+</strong> Mock Exams</p>
+    </div>
+
+    <div class="search-container">
+        <div class="search-wrapper">
+            <input id="searchInput" type="text" placeholder="Search resources..." aria-label="Search resources" />
+            <button class="mic-btn" id="micBtn" title="Search by voice">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="cards-grid">
+
+        <div class="card timetable">
+            <div class="icon">🔒</div>
+            <div class="card-header">
+                <h2 class="card-title">Ideation & Feedback</h2>
+                <p class="card-description">Converting ideas into useful solutions.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">You are welcome.🎉</h3>
+                <a href="https://docs.google.com/document/d/1tYExkgcirqx9sW1ogmsP6Ir47vBIOXeasuVIYc0G5jo/edit?usp=sharing" class="link-item">A brief introduction to EcoSystem</a>
+                <a href="https://drive.google.com/file/d/1sIG0DJ4pVMEnCjhA6iWgMznBFDzcPBqz/view?usp=sharing" class="link-item">इकोसिस्टिम २०२६ - मराठीतून ओळख</a>
+                <a href="https://script.google.com/macros/s/AKfycbyU5_GsvOnqekKqvzl0dhVMR-zmHADQlAl8X03Nlk3DC2GL-97EdG_TMq4xCIzpbOoc5A/exec" class="link-item">Schedule an appointment with Rahul</a>
+                <a href="https://forms.gle/v12gqr4TcRCrnXHx6" class="link-item">Give feedback to make your EcoSystem 2026 better</a>
+                <a href="https://docs.google.com/presentation/d/1q0uj6WFhEyIu0OjAUSAsaz-ZGhdyWa7CLpX6W3q1v5w/edit?usp=sharing" class="link-item">NBNSTIC IT Progress Book (प्रगती पुस्तक)</a>
+                <a href="https://script.google.com/macros/s/AKfycbyY9nciONqljNLQa6FkgZii5LDC-ZtX7CPKNQfopGIlyf4qxQF6F8nYRp5JGlGqMGUz/exec" class="link-item">Rate your IT Department</a>
+                <a href="https://forms.gle/JRVFWbPZZei44Jjo6" class="link-item">Register to receive <strong>Happy Birthday Card</strong> from your IT Dept.</a>
+            </div>
+        </div>
+
+        <div class="card timetable">
+            <div class="icon">📅</div>
+            <div class="card-header">
+                <h2 class="card-title">Online Submissions</h2>
+                <p class="card-description">Upload all your theory assignments (scanned pdf < 10 MB).</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">TEIT & BE Submissions</h3>
+                <a href="https://rms-sof.github.io/BE-Sem-7-Progress-Tracker/" class="link-item">BE Sem 7 Tracker</a>
+                <a href="https://drive.google.com/file/d/1gKKSbTaKW54DvbKZOnMVcRi5uZsHgffb/view?usp=sharing" class="link-item">BE VII ISR Theory Assignments</a>
+                <a href="https://drive.google.com/file/d/17vZUiXscrfWD6wRzwdPB1puHyOKg0Dnv/view?usp=sharing" class="link-item">BE VII DL Theory Assignments</a>
+                <a href="https://drive.google.com/file/d/1H6XR7S1d8v2jXxPOg5QI0sClVfMCkNkQ/view?usp=sharing" class="link-item">BE VII SMC Theory Assignments</a>
+                <a href="https://rms-sof.github.io/BE-8-Progress-Traker/" class="link-item">BE Sem 8 Tracker</a>
+                <a href="https://drive.google.com/file/d/1yJtnRwWkLMH_0MyFsrJchST0ukl9u7yy/view?usp=sharing" class="link-item">BE VIII DS Theory Assignments</a>
+                <a href="https://drive.google.com/file/d/1aWFOpOA5nrQCBKx9XjZPuiwTo0G2HOkV/view?usp=sharing" class="link-item">BE VIII SOC Theory Assignments</a>
+                <a href="https://script.google.com/macros/s/AKfycbwOYSuuqrh8t0JVHfmspY5WJt3iYu8E3L2MABiCzXAI712TZF_FKqsyG0MfbKmmgWH9/exec" class="link-item">Upload Assignments</a>
+                <a href="https://script.google.com/macros/s/AKfycbzqmI_BI2zE4DzZ52dEnkBNjJ-bFi-aakDiu-Up7_NuXEX42vVdN4jJz3dMKUwLqbUK/exec" class="link-item">Track Submission Status</a>
+                <a href="https://script.google.com/macros/s/AKfycby2Fg8_whZ-8cRW78Mk95y_n_49NypqLRQeMSiW4chZ7bgFE0YQAk4lAaMXGlbEY1cu/exec" class="link-item">Apply for BE IT Submission Ticket</a>
+            </div>
+        </div>
+
+        <div class="card calendar">
+            <div class="icon">🎪</div>
+            <div class="card-header">
+                <h2 class="card-title">Enhance Yourself</h2>
+                <p class="card-description">Discover yourself. Build a growth mindset.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Self Enhancement</h3>
+                <a href="https://www.youtube.com/watch?v=Bi4A4xedCvI" class="link-item">Your role in shaping Excellence</a>
+                <a href="https://youtu.be/QXtpq0EcFa4" class="link-item">Student Advisory for Good Academic Life</a>
+                <a href="https://www.youtube.com/watch?v=lwSOI0VlkF8&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=1" class="link-item">Importance of Regular Attendance</a>
+                <a href="https://www.youtube.com/watch?v=IPuhV4pfFwI" class="link-item">Reorient yourself for AI Era</a>
+                <a href="https://www.youtube.com/watch?v=1s_GXXA91zg" class="link-item">How to measure quality of IT education?</a>
+                <a href="https://www.youtube.com/watch?v=0MkmHBXSY1c&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=3" class="link-item">How to make study interesting?</a>
+                <a href="https://www.youtube.com/watch?v=8kumlKbqSEM&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=12" class="link-item">How to Improve Thinking Process</a>
+                <a href="https://www.youtube.com/watch?v=IMspKgje554&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=6" class="link-item">Find out your Learning Style</a>
+                <a href="https://rms-sof.github.io/RoadMap/" class="link-item">Build your Road Map to Success</a>
+                <a href="https://rms-sof.github.io/Know-yourself/" class="link-item">Take a Quiz to Analyze Yourself</a>
+            </div>
+        </div>
+
+        <div class="card stress">
+            <div class="icon">🧘</div>
+            <div class="card-header">
+                <h2 class="card-title">Paperless Exams</h2>
+                <p class="card-description">Let us practice to kill the fear of exams.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Paperless Exam Systems</h3>
+                <a href="https://rms-sof.github.io/Paperless-Exam/" class="link-item">Take Paperless Exams</a>
+                <a href="https://docs.google.com/document/d/1VtLZ2rXCWnXfkHiFm_wjS1lwaTk90GxP4A2uFAcsK-U/edit?usp=sharing" class="link-item">For teachers - PR Exam Chits</a>
+            </div>
+        </div>
+
+        <div class="card stress">
+            <div class="icon">⚡</div>
+            <div class="card-header">
+                <h2 class="card-title">Actionable Plan</h2>
+                <p class="card-description">What to do now?</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Plans & Maps</h3>
+                <a href="https://youtu.be/VwFhjGpz_gs" class="link-item">Explore your hidden Potentials</a>
+                <a href="https://rms-sof.github.io/transform/" class="link-item">Explore Co-Academic Framework</a>
+                <a href="https://rms-sof.github.io/IT-ActionPlan-1/" class="link-item">Simple Plan for Actions</a>
+                <a href="https://rms-sof.github.io/IT-RoadMap-1/" class="link-item">Intermediate Plan for Actions</a>
+                <a href="https://rms-sof.github.io/IT-action-plan-2/" class="link-item">Advance Plan for Actions</a>
+                <a href="https://rms-sof.github.io/IT-Motivate/" class="link-item">Constant Motivation</a>
+            </div>
+        </div>
+
+        <div class="card stress">
+            <div class="icon">🧘</div>
+            <div class="card-header">
+                <h2 class="card-title">Stress Management</h2>
+                <p class="card-description">Mental health resources and counselling.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Wellness Resources</h3>
+                <a href="https://youtu.be/ZU3XqlTRu_o" class="link-item">Counselling for FINAL YEAR students</a>
+                <a href="https://youtube.com/shorts/sudW1W5D-K8" class="link-item">Festivals & Academics</a>
+                <a href="https://www.youtube.com/watch?v=NRft1DVXBcI" class="link-item">Boosting Morale</a>
+                <a href="https://www.youtube.com/watch?v=pKEWPRawEQg" class="link-item">Recovering from small problems</a>
+                <a href="https://www.youtube.com/watch?v=iQGEd_oeF7s" class="link-item">How to Improve Mental Health?</a>
+            </div>
+        </div>
+
+        <div class="card timetable">
+            <div class="icon">📅</div>
+            <div class="card-header">
+                <h2 class="card-title">Digital Wellness</h2>
+                <p class="card-description">Stay organized. Be healthy & productive.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Digital Hygiene</h3>
+                <a href="https://youtube.com/shorts/Tt--7axTysw" class="link-item">How to reclaim yourself?</a>
+                <a href="https://www.youtube.com/watch?v=XRp7FDvkwPk" class="link-item">How to be Digitally Fit?</a>
+                <a href="https://www.youtube.com/watch?v=HRoIiWz2oE4" class="link-item">Cultivate Good Habits</a>
+                <a href="https://rms-sof.github.io/deep-clean/" class="link-item">Deep Cleaning in Software Development</a>
+            </div>
+        </div>
+
+        <div class="card calendar">
+            <div class="icon">🎪</div>
+            <div class="card-header">
+                <h2 class="card-title">Academic Resources</h2>
+                <p class="card-description">Schedules, formats, and skill development activities.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Syllabus & Timetables</h3>
+                <a href="https://forms.gle/T8hYFG5dsAU7C8PY9" class="link-item">Submission Schedules & Calendars</a>
+                <a href="https://docs.google.com/spreadsheets/d/1no-aVnVeB8ylrZtSs-VRtqLC7bEb-xnFeAyaxmho6Zs/edit?usp=sharing" class="link-item">Check Current Timetable</a>
+                <a href="https://forms.gle/TF7RxbkdQH7b9T8g9" class="link-item">Formats: CEP, Seminar, Internship, BE Project</a>
+                <a href="https://docs.google.com/document/d/1MZvYIHwKV_pLMDldbRKFU-bKZvM0oqqWssyOhPNdvuo/edit?usp=sharing" class="link-item">Check Current Academic Calendar</a>
+                <a href="https://forms.gle/tQ6fxMp5C9Hng27N9" class="link-item">IT Course Entire Syllabus</a>
+                <a href="https://script.google.com/macros/s/AKfycbwLND-1SZ5Kt5yp-6Kcptuiy6sfDxwubyp0zqjIIDXOxfR1hADmsSDw0u1XRZdBmvMx5g/exec" class="link-item">Mark your Presence</a>
+            </div>
+        </div>
+
+        <div class="card stress">
+            <div class="icon">🧘</div>
+            <div class="card-header">
+                <h2 class="card-title">Algorithms by Visualization</h2>
+                <p class="card-description">Concepts better understood through animation.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Animations</h3>
+                <a href="https://rms-sof.github.io/Concepts-Animations/" class="link-item">Learning Concepts & Algorithms</a>
+            </div>
+        </div>
+
+        <div class="card timetable">
+            <div class="icon">📅</div>
+            <div class="card-header">
+                <h2 class="card-title">Historical Timelines</h2>
+                <p class="card-description">Seminal papers and people who impacted domains.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">History of Tech</h3>
+                <a href="https://www.youtube.com/watch?v=PMU9ho6NulI" class="link-item">Information & Storage Retrieval - Timeline</a>
+                <a href="https://rms-sof.github.io/DL-TimeLine/" class="link-item">Deep Learning - Timeline</a>
+            </div>
+        </div>
+
+        <div class="card calendar">
+            <div class="icon">🎪</div>
+            <div class="card-header">
+                <h2 class="card-title">Concept Videos</h2>
+                <p class="card-description">Introductory concepts before starting detailed study.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Introductory Concepts</h3>
+                <a href="https://www.youtube.com/watch?v=EAikorsZB3E" class="link-item">Distributed Systems (DS)</a>
+                <a href="https://www.youtube.com/watch?v=a0gkJOlrFIk" class="link-item">SNE (BE- VIII)</a>
+                <a href="https://www.youtube.com/watch?v=EYKCVjUA0hE" class="link-item">Social Computing (SOC)</a>
+                <a href="https://www.youtube.com/watch?v=WttASb3EuHc" class="link-item">Information Storage & Retrieval (ISR)</a>
+                <a href="https://www.youtube.com/watch?v=2xdQ9J34-q8" class="link-item">Deep Learning (DL)</a>
+                <a href="https://www.youtube.com/watch?v=Xk-XZO4C6VI" class="link-item">DSBDA (TE- VI)</a>
+                <a href="https://www.youtube.com/watch?v=8MJE06zY9mE" class="link-item">DBMS (SE IV)</a>
+            </div>
+        </div>
+
+        <div class="card timetable">
+            <div class="icon">📅</div>
+            <div class="card-header">
+                <h2 class="card-title">Lab Manuals</h2>
+                <p class="card-description">Know the expected output of Lab Practicals.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Manuals & Journals</h3>
+                <a href="https://docs.google.com/document/d/19w9iiM_gDk_a58S89Lt06MBvNhxKWrT0/edit?usp=sharing" class="link-item">Information Storage & Retrieval</a>
+                <a href="https://drive.google.com/file/d/1xktxwn3GxOOnJLtog_8IwFLdcSJ9-6JX/view?usp=drive_link" class="link-item">Deep Learning Journal</a>
+                <a href="https://drive.google.com/file/d/1WN3UXCq6EsHwmnz2GzU8qiiN78lUUnOb/view?usp=drive_link" class="link-item">Distributed Systems Journal</a>
+                <a href="https://drive.google.com/file/d/18aPnG_cpr76X-hn2z1TxkUsnzp0ng6k5/view?usp=drive_link" class="link-item">Cloud Computing Journal</a>
+                <a href="https://drive.google.com/file/d/10g9vcCvWJpqaWrdvd7veDBU8fR3hmzPW/view?usp=sharing" class="link-item">DSBDA Journal</a>
+            </div>
+        </div>
+
+        <div class="card timetable">
+            <div class="icon">📅</div>
+            <div class="card-header">
+                <h2 class="card-title">Subjective Exams</h2>
+                <p class="card-description">Proctored theoretical knowledge checks.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Mock Theory</h3>
+                <a href="https://script.google.com/macros/s/AKfycbzV5ZR_0ilC4vacB6NUpzMhUkUkSYNKBSRsZwpurblUCacNO1EBVS-RHZpSy4G7NqOTKA/exec" class="link-item">Take Mock Theory Exam (BE IT)</a>
+                <a href="https://rms-sof.github.io/ML-subjective/" class="link-item">ML Subjective (30 Marks)</a>
+                <a href="https://rms-sof.github.io/DSBDA-subjective/" class="link-item">DSBDA Subjective</a>
+                <a href="https://rms-sof.github.io/DL-subjective/" class="link-item">DL Subjective</a>
+                <a href="https://rms-sof.github.io/ISR-subjective/" class="link-item">ISR Subjective</a>
+            </div>
+        </div>
+
+        <div class="card timetable">
+            <div class="icon">📅</div>
+            <div class="card-header">
+                <h2 class="card-title">Mock Oral Exams</h2>
+                <p class="card-description">Improve speaking skills and confidence.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Mock Viva</h3>
+                <a href="https://script.google.com/macros/s/AKfycbyx9dWZmrKStNcA9OKjxLUo5y1y-bz4NOlSbhwtPbWtxSgYcSZKHK9NwCAlKRpj6qg7/exec" class="link-item">BE Oral: BIA</a>
+                <a href="https://script.google.com/macros/s/AKfycbwIQYs0RQVhUN6-AhsnJ-L8FFW_g9Quoo8KgpIIHISL7yQQxlCALcInXh-I0ZHb-eA0/exec" class="link-item">BE Oral: Project</a>
+                <a href="https://script.google.com/macros/s/AKfycbzHoN4DNRx1C-ikD4eF0wCqf1lhynGctrDNrjyOY4b_4a4dyAddNPUJoLAk_NjzQWfKCA/exec" class="link-item">BE Oral: ISR</a>
+                <a href="https://script.google.com/macros/s/AKfycbwVlm7YeDC5rze0E884aXXtFtCszi7CXpD7SRZ2-F_TQ6FyJjIXGKr7_HCayYcdW6P7/exec" class="link-item">SE Oral: OOP</a>
+            </div>
+        </div>
+
+        <div class="card stress">
+            <div class="icon">🧘</div>
+            <div class="card-header">
+                <h2 class="card-title">Personalized Learning</h2>
+                <p class="card-description">Independent study pathways.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Courses & Materials</h3>
+                <a href="https://youtu.be/bmLqbZflhgA" class="link-item">What is Personalized Learning?</a>
+                <a href="https://drive.google.com/file/d/1vngCskIUUL_-EqeT-8cp1ZrzW8Lm9JU9/view?usp=drive_link" class="link-item">Deep Learning (DL)</a>
+                <a href="https://drive.google.com/file/d/129GzLJorVX1M3CNwJeQ6K2hrJgWkdUT2/view?usp=drive_link" class="link-item">ISR Material</a>
+                <a href="https://drive.google.com/file/d/1RPReHBk0NjjHw8DtHbLRBP2953f6XZPi/view?usp=drive_link" class="link-item">Gamified Lesson Plans</a>
+            </div>
+        </div>
+
+        <div class="card timetable">
+            <div class="icon">📅</div>
+            <div class="card-header">
+                <h2 class="card-title">Special CS Topics</h2>
+                <p class="card-description">Maths, Graphics, TOC, and Algorithms.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Selected Series</h3>
+                <a href="https://rms-sof.github.io/Distributions/" class="link-item">Maths: Distributions</a>
+                <a href="https://rms-sof.github.io/Decidability/" class="link-item">TOC: Decidability</a>
+                <a href="https://rms-sof.github.io/turing/" class="link-item">TOC: Turing Machines</a>
+                <a href="https://rms-sof.github.io/clean-code/" class="link-item">SW Engg: Clean Code</a>
+                <a href="https://rms-sof.github.io/Sorting/" class="link-item">DSA: Sorting Algorithms</a>
+                <a href="https://rms-sof.github.io/shortest-path/" class="link-item">DSA: Shortest Path</a>
+                <a href="https://rms-sof.github.io/Normalization/" class="link-item">DBMS: Normalization</a>
+            </div>
+        </div>
+
+        <div class="card quiz">
+            <div class="icon">🧠</div>
+            <div class="card-header">
+                <h2 class="card-title">Online Quizzes</h2>
+                <p class="card-description">Interactive quizzes and mock tests.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Subject Quizzes</h3>
+                <a href="https://rms-sof.github.io/Programming-Quiz/" class="link-item">Programming Abilities</a>
+                <a href="https://rms-sof.github.io/AI-login/" class="link-item">AI Knowledge</a>
+                <a href="https://rms-sof.github.io/Research-methodology/" class="link-item">Research Methodology</a>
+                <a href="https://rms-sof.github.io/DBMS-Quiz/" class="link-item">DBMS Quiz</a>
+                <a href="https://rms-sof.github.io/DSA-Quiz/" class="link-item">DSA Quiz</a>
+                <a href="https://rms-sof.github.io/ML-Quiz/" class="link-item">Machine Learning Quiz</a>
+            </div>
+        </div>
+
+        <div class="card timetable">
+            <div class="icon">📅</div>
+            <div class="card-header">
+                <h2 class="card-title">Location Bound Exams</h2>
+                <p class="card-description">On-premise NBNSTIC-IT Exams.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">NBNSTIC-IT Exams</h3>
+                <a href="https://script.google.com/macros/s/AKfycbwSrhUuNDQEYoatkvFnnMGz8WYZignLbhRXqS_0bb_MUPqPjS-OlXgEgmaIFC5wTuRW/exec" class="link-item">Rapidfire MCQs</a>
+                <a href="https://script.google.com/macros/s/AKfycbwrOloKfxFkG88Lp4x_ihjGhHePVvh8ygsvZDtvqiDHOzlLOaC2Z7jAlHIdUxmJGKcrlQ/exec" class="link-item">Start IT MCQs</a>
+            </div>
+        </div>
+
+        <div class="card admin">
+            <div class="icon">⚡</div>
+            <div class="card-header">
+                <h2 class="card-title">Employability</h2>
+                <p class="card-description">Streamline your skills for placement.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Career Prep</h3>
+                <a href="https://youtu.be/JzsmpQfVRjY" class="link-item">Make IT Career Future-proof</a>
+                <a href="https://youtu.be/gl3JOzEIlyk" class="link-item">Changing Skill-sets</a>
+                <a href="https://www.youtube.com/watch?v=9PIIA97XQjY" class="link-item">How to Crack Technical Interview</a>
+            </div>
+        </div>
+
+        <div class="card research">
+            <div class="icon">🔬</div>
+            <div class="card-header">
+                <h2 class="card-title">Research & Innovation</h2>
+                <p class="card-description">Research methodology, IPR and Patents.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Research Resources</h3>
+                <a href="https://youtu.be/ssitnpGdfs8" class="link-item">How to write a research paper?</a>
+                <a href="https://www.youtube.com/watch?v=afrEslTjm0Y" class="link-item">What is Research Methodology?</a>
+                <a href="https://scholar.google.co.in/citations?user=ghoW_6AAAAAJ&hl=en" class="link-item">HOD's Research Profile</a>
+            </div>
+        </div>
+
+        <div class="card timetable">
+            <div class="icon">📅</div>
+            <div class="card-header">
+                <h2 class="card-title">Useful Utilities</h2>
+                <p class="card-description">Productivity tools.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Tools</h3>
+                <a href="https://rms-sof.github.io/Edu-Utilities/" class="link-item">Check Productivity Solutions</a>
+            </div>
+        </div>
+
+        <div class="card timetable">
+            <div class="icon">📅</div>
+            <div class="card-header">
+                <h2 class="card-title">Games</h2>
+                <p class="card-description">Dopamine Detoxing tiny games.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">Brain Games</h3>
+                <a href="https://rms-sof.github.io/PuzzleParadise/" class="link-item">Puzzles</a>
+                <a href="https://rms-sof.github.io/GameArcade/" class="link-item">Dopamine Detox</a>
+                <a href="https://rms-sof.github.io/wordbuilder/" class="link-item">Word Builder</a>
+            </div>
+        </div>
+
+        <div class="card admin">
+            <div class="icon">⚡</div>
+            <div class="card-header">
+                <h2 class="card-title">Philosophy</h2>
+                <p class="card-description">Be calm. Be with the greats to be great.</p>
+            </div>
+            <div class="links-section">
+                <h3 class="links-title">तत्त्वज्ञान</h3>
+                <a href="https://rms-sof.github.io/Geeta-geetai/" class="link-item">Geeta गीता-गीताई</a>
+                <a href="https://docs.google.com/document/d/1DHyQwn51LylEYqUL8uh24AKd0X7idMODNsGNDOiRKFw/edit?usp=sharing" class="link-item">Haripath हरिपाठ</a>
+                <a href="https://rms-sof.github.io/Life-Q/" class="link-item">Get Inspired!</a>
+            </div>
+        </div>
+
+    </div> 
 </div>
 
-<div class="search-container">
-<input id="searchInput" type="text" placeholder="Search resources ..." />
-</div>
-
-<div class="cards-grid">
-
-<!-- EXAMPLE CARD (Your content continues unchanged below) -->
-
-<!-- Underconstruction -->
-            <div class="card timetable">
-                <div class="icon">🔒</div>
-                <div class="card-header">
-                    <h2 class="card-title">Ideation & Feedback</h2>
-                    <p class="card-description">Converting ideas into useful solutions. </p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">You are welcome.🎉</h3>
-		    <a href="https://docs.google.com/document/d/1tYExkgcirqx9sW1ogmsP6Ir47vBIOXeasuVIYc0G5jo/edit?usp=sharing" class="link-item">A brief intoduction to EcoSystem. </a>
-		    <a href="https://drive.google.com/file/d/1sIG0DJ4pVMEnCjhA6iWgMznBFDzcPBqz/view?usp=sharing" class="link-item"> इकोसिस्टिम २०२६ - मराठीतून ओळख </a>		    
-<a href="https://script.google.com/macros/s/AKfycbyU5_GsvOnqekKqvzl0dhVMR-zmHADQlAl8X03Nlk3DC2GL-97EdG_TMq4xCIzpbOoc5A/exec" class="link-item">Schedule an appointment with Rahul</a>
-		    <a href="https://forms.gle/v12gqr4TcRCrnXHx6" class="link-item">Give feedback to make your EcoSystem 2026 better.</a>	
-		    <a href="https://docs.google.com/presentation/d/1q0uj6WFhEyIu0OjAUSAsaz-ZGhdyWa7CLpX6W3q1v5w/edit?usp=sharing" class="link-item">NBNSTIC IT Progress Book (प्रगती पुस्तक )</a>
-	            <a href="https://script.google.com/macros/s/AKfycbyY9nciONqljNLQa6FkgZii5LDC-ZtX7CPKNQfopGIlyf4qxQF6F8nYRp5JGlGqMGUz/exec"class="link-item">Rate your IT Department</a>
-                    <a href=" https://forms.gle/JRVFWbPZZei44Jjo6"class="link-item">Register to receive <strong>Happy Birthday Card </strong>from your IT Dept.</a>
-                    <!-- This is a comment : <a href=""class="link-item">Things are still brewing....</a>       -->
-           
-                </div>
-            </div>  
-
-	<!-- Online Submissions-->
-            <div class="card timetable">
-                <div class="icon">📅</div>
-                <div class="card-header">
-                    <h2 class="card-title">Theory Assignments Online Submission System</h2>
-                    <p class="card-description">Upload all your theory assignments (scanned pdf file size < 10 MB) </p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">TEIT ( ML, DSBDA, TOC )  |  BE (  ISR, DL, SMC, DS, SNE, SOC )  |  All subjects taught by Prof. Rahul M. Samant </h3>
-                   
-<a href=" https://rms-sof.github.io/BE-Sem-7-Progress-Tracker/" class="link-item"> BE Sem 7 Track your Academic progress throughout the semester.</a>
-<a href="https://drive.google.com/file/d/1gKKSbTaKW54DvbKZOnMVcRi5uZsHgffb/view?usp=sharing" class="link-item">Know about BE VII Information & Storage Retrieval (ISR) Theory Assignemnts. </a>          
-                    <a href="https://drive.google.com/file/d/17vZUiXscrfWD6wRzwdPB1puHyOKg0Dnv/view?usp=sharing" class="link-item">Know about BE VII Deep Learning (DL)  Theory Assignments.</a>          
- <a href="https://drive.google.com/file/d/1H6XR7S1d8v2jXxPOg5QI0sClVfMCkNkQ/view?usp=sharing" class="link-item">Know about BE VII Smart Computing (SMC) Theory Assignments.</a>
- 
-
-<a href="https://rms-sof.github.io/BE-8-Progress-Traker/" class="link-item">BE Sem 8 Track your academic progress.</a>
-
-<a href="https://drive.google.com/file/d/1yJtnRwWkLMH_0MyFsrJchST0ukl9u7yy/view?usp=sharing" class="link-item">Know about BE VIII Distributed Systems (DS) Theory Assignments.</a>
- <a href="https://drive.google.com/file/d/1aWFOpOA5nrQCBKx9XjZPuiwTo0G2HOkV/view?usp=sharing" class="link-item">Know about BE VIII Social Computing (SOC) Theory Assignments.</a>                      
-<a href="https://script.google.com/macros/s/AKfycbwOYSuuqrh8t0JVHfmspY5WJt3iYu8E3L2MABiCzXAI712TZF_FKqsyG0MfbKmmgWH9/exec" class="link-item">Upload theory assignments</a>     
-		    <a href="https://script.google.com/macros/s/AKfycbzqmI_BI2zE4DzZ52dEnkBNjJ-bFi-aakDiu-Up7_NuXEX42vVdN4jJz3dMKUwLqbUK/exec" class="link-item"> Track Theory Assignments Status </a>
-		    <a href="https://script.google.com/macros/s/AKfycby2Fg8_whZ-8cRW78Mk95y_n_49NypqLRQeMSiW4chZ7bgFE0YQAk4lAaMXGlbEY1cu/exec"  class="link-item"> Apply for BE IT Submission Ticket</a>
-                </div>
-            </div>
-
-	  <!-- Enhance yourself -->
-            <div class="card calendar">
-                <div class="icon">🎪</div>
-                <div class="card-header">
-                    <h2 class="card-title">Enhance Yourself</h2>
-                    <p class="card-description">Discover yourself. Know learning and knowledge retention methods to build growth mindset.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Self Enhacement:</h3>
-		    <a href="https://www.youtube.com/watch?v=Bi4A4xedCvI"	class="link-item"> Your role in shaping Excellence </a>                  
-		    <a href="https://youtu.be/QXtpq0EcFa4" class="link-item">Student Advisory for Good academic life</a>
-		    <a href="https://www.youtube.com/watch?v=lwSOI0VlkF8&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=1" class="link-item">Importance of Regular attendance</a>
-		    <a href="https://www.youtube.com/watch?v=IPuhV4pfFwI" class="link-item"> Reorient yourself for AI Era</a>
-	            <a href="https://www.youtube.com/watch?v=1s_GXXA91zg" class="link-item"> How to measure quality of IT education?</a>
-                    <a href="https://www.youtube.com/watch?v=0MkmHBXSY1c&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=3" class="link-item">How to make study interesting?</a>
-                    <a href="https://www.youtube.com/watch?v=8kumlKbqSEM&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=12" class="link-item">How to Improve your Thinking process?</a>
-                    <a href="https://www.youtube.com/watch?v=IMspKgje554&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=6" class="link-item">Find out your Learning Style</a>
-                    <a href="https://www.youtube.com/watch?v=GQGLl2eZSpI&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=22" class="link-item">Teacher v/s AI - Why to attend lectures regularly?</a>
-		    <a href="https://www.youtube.com/watch?v=wiBrgc8Iz4w" class="link-item"> Why to perform practicals regularly in lab?</a>
-	            <a href="https://www.youtube.com/watch?v=PuBbaAyZ098" class ="link-item"> Strict policy v/s Nudging</a>
-		    <a href="https://youtu.be/nsconc321-U"	class="link-item"> Transform yourself </a>
-		    <a href="https://rms-sof.github.io/RoadMap/" class="link-item">Build your Road Map to Success</a>
-  		    <a href="https://drive.google.com/file/d/12j_rEMiU_hFKfcfYm5B6BpV3L_WSF448/view?usp=sharing" class="link-item">Explore Road Map for  IT Skills</a>
-		    <a href="https://youtu.be/f0gkqLrwA3s" class="link-item">Develop successful Personality</a>	
-		    <a href="https://rms-sof.github.io/Know-yourself/" class="link-item">Take a Quiz to analyze Yourself</a>	  
-                </div>
-            </div>        
-
-	<!-- PaperlessExamSystems -->
-            <div class="card stress">
-                <div class="icon">🧘</div>
-                <div class="card-header">
-                    <h2 class="card-title">Exams</h2>
-                    <p class="card-description">Let us practice to kill the fear of exams.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Paperless Exam Systems</h3>                  
-                    <a href="https://rms-sof.github.io/Paperless-Exam/" class="link-item">Take Paperless Exams to boost your confidence.</a>
-                    <a href="https://docs.google.com/document/d/1VtLZ2rXCWnXfkHiFm_wjS1lwaTk90GxP4A2uFAcsK-U/edit?usp=sharing" class="link-item">For teachers - PR Exam Chits</a>
-                         
-                </div>
-            </div>    
-
-	    
-
-	<!-- Actionable planCard -->
-            <div class="card stress">
-                <div class="icon">⚡</div>
-                <div class="card-header">
-                    <h2 class="card-title">Actionable plan</h2>
-                    <p class="card-description">What to do now?</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Actionable Plan</h3>
-		    <a href="https://youtu.be/QXtpq0EcFa4" class="link-item">Student Advisory for smooth Engg journey</a>
-		    <a href="https://youtu.be/VwFhjGpz_gs"	 class="link-item">Explore your hidden Potentials</a>
-                    <a href="https://youtu.be/LB8445j6GzU"  class="link-item"> Know iconic concepts in IT field </a>
-		    <a href="https://drive.google.com/file/d/12j_rEMiU_hFKfcfYm5B6BpV3L_WSF448/view?usp=sharing" class="link-item">Map of Subject Knowledge & Industry skills & AI Skills </a>
-                    <a href="https://rms-sof.github.io/transform/" class="link-item"> Explore Co-Academic framework for growth</a>
-		    <a href="https://rms-sof.github.io/RoadMap/" class="link-item">Plan your effective Biodata</a>
-                    <a href="https://rms-sof.github.io/IT-ActionPlan-1/" class="link-item">Simple Plan for actions</a>
-		    <a href=" https://rms-sof.github.io/IT-RoadMap-1/" class="link-item">Intermediate Plan for actions</a>
-                    <a href="https://rms-sof.github.io/IT-action-plan-2/" class="link-item">Advance Plan for actions</a>
-                     <a href="https://rms-sof.github.io/IT-Motivate/" class="link-item">Constant Motivation to be on track</a>  
-		</div>
-            </div>
-
-
-            <!-- Stress Management Card -->
-            <div class="card stress">
-                <div class="icon">🧘</div>
-                <div class="card-header">
-                    <h2 class="card-title">Stress Management</h2>
-                    <p class="card-description">Access mental health resources, counselling services, and wellness programs for a balanced student life.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Wellness Resources:</h3>
-                    <a href="https://youtu.be/ZU3XqlTRu_o"  class="link-item">Counselling for FINAL YEAR  students</a>
-	            <a href="https://youtube.com/shorts/sudW1W5D-K8" class="link-item">Festivals & Academics</a>
-		    <a href="https://www.youtube.com/watch?v=NRft1DVXBcI&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=17" class="link-item">Listen for boosting morale to be actionable.</a>
-                    <a href="https://www.youtube.com/watch?v=pKEWPRawEQg&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=26" class="link-item">Watch for recovering from small problems.</a>
-                    <a href="https://www.youtube.com/watch?v=QtWB5XNjcig&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=5" class="link-item">(मराठी भाषेत )Counselling for recovering from crisis.</a>
-                    <a href="https://www.youtube.com/watch?v=iQGEd_oeF7s&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=14" class="link-item">How to Improve Mental Health?</a>
-		   <a href="https://youtu.be/QXtpq0EcFa4" class="link-item">Student Advisory</a>
-                </div>
-            </div>
-
-	 
-	    <!-- Digital well-being -->
-            <div class="card timetable">
-                <div class="icon">📅</div>
-                <div class="card-header">
-                    <h2 class="card-title">Digital Wellness</h2>
-                    <p class="card-description">Stay organized with your life. Learn the ways to be more healthy & productive.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Digital Wellness:</h3>
-		    <a href="https://youtube.com/shorts/Tt--7axTysw" class="link-item">How to reclaim yourself?</a>
-                    <a href="https://www.youtube.com/watch?v=XRp7FDvkwPk&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=18" class="link-item">How to be Digitally Fit?</a>
-                    <a href="https://www.youtube.com/watch?v=zamxUKQhhwM&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=25" class="link-item">How to measure excess limit in technology dependancy?</a>
-                    <a href="https://www.youtube.com/watch?v=HRoIiWz2oE4&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=15" class="link-item">How to Cultivate Good Habits?</a>
-		    <a href="https://www.youtube.com/watch?v=ruJb1IXziV0&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=23" class="link-item">Professional Help 1 - Universal Human Values in Coding</a>
-		     <a href="https://www.youtube.com/watch?v=giHPgLyY2HE&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=28" class="link-item">Professional Help 2 - Harmony in Coding</a>
- 		     <a href="https://www.youtube.com/watch?v=2vUob_RbZOM&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=27" class="link-item">Professional Help 3 - Management Principles in Coding</a>     
-                     <a href="https://rms-sof.github.io/deep-clean/" class="link-item">Professional Help 4 - Deep Cleaning in Software Development</a>           
-                </div>
-            </div>
-	
-	
-
-            <!-- Academic resources -->
-            <div class="card calendar">
-                <div class="icon">🎪</div>
-                <div class="card-header">
-                    <h2 class="card-title">Academic Resources</h2>
-                    <p class="card-description">Go digital. Know the semester schedule. Get all the formats. Discover activities to develop your skills & abilities.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Academic Resources</h3>
-		    <a href="https://youtu.be/QXtpq0EcFa4" class="link-item">IT Student Advisory</a>
-		    <a href="https://www.youtube.com/watch?v=Bi4A4xedCvI"	class="link-item"> You & NAAC-NBA-NEP </a>
-		    <a href="https://youtu.be/U6HJFVG6imc" class="link-item">Inclusive Education in your department</a>
-		    <a href="https://youtu.be/Yl85mMTdo_E" class="link-item">Building Academic Culture in your department</a>
-                    <a href="https://forms.gle/T8hYFG5dsAU7C8PY9" class="link-item">Submission Schedules & Calendars</a>
-	            <a href="https://drive.google.com/file/d/12j_rEMiU_hFKfcfYm5B6BpV3L_WSF448/view?usp=sharing" class="link-item">Explore IT Skills Map</a>
-                    <a href="https://docs.google.com/spreadsheets/d/1no-aVnVeB8ylrZtSs-VRtqLC7bEb-xnFeAyaxmho6Zs/edit?usp=sharing" class="link-item">Check Current Timetable</a>
-                    <a href="https://forms.gle/TF7RxbkdQH7b9T8g9" class="link-item">Get all Formats related to CEP, Seminar, Internship & BE Project</a>
-                    <a href="https://docs.google.com/document/d/1MZvYIHwKV_pLMDldbRKFU-bKZvM0oqqWssyOhPNdvuo/edit?usp=sharing" class="link-item">Check Current Academic Calendar</a>
-                    <a href="https://script.google.com/macros/s/AKfycbwLND-1SZ5Kt5yp-6Kcptuiy6sfDxwubyp0zqjIIDXOxfR1hADmsSDw0u1XRZdBmvMx5g/exec" class="link-item">Mark your Presence</a>
-                    <a href="https://docs.google.com/spreadsheets/u/3/d/1OVzWzKBKbYcmwCc3rM2INpl3b9J3qZAko6iL_adhfRk/edit?usp=sharing" class="link-item">Check your Presence</a>
-                    <a href="https://forms.gle/tQ6fxMp5C9Hng27N9" class="link-item">IT Course entire Syllabus</a>              
-		    <a href="https://docs.google.com/document/d/10I6DXo6a9Lrq9qS_VWfQ63fxOdFG8fu2UglVdGdDw48/edit?usp=sharing" class="link-item"> Read NBNSTIC-IT Newsletters</a>
-                    <a href="https://docs.google.com/presentation/d/1-0X4y5KJZ03tPyZ7zNegE3wlMPglbSDn/edit?usp=sharing&ouid=102506932615320403527&rtpof=true&sd=true" class="link-item">FE Induction - HOD-IT Presentation</a>
-<a href="https://script.google.com/macros/s/AKfycbzvJ8XpuL-p8yxnOJcGpJMHX_sz36YeZoq-ggkzkb3h4gj2AC23QfehlEPdeiBE3kBy/exec" class="link-item">BE Sem 8 Track your academic progress.</a>
-
-                </div>
-            </div>
-        
-
-        <!-- Animations -->
-            <div class="card stress">
-                <div class="icon">🧘</div>
-                <div class="card-header">
-                    <h2 class="card-title">Algorithms & Concepts by Visualizations</h2>
-                    <p class="card-description">Key concepts and algorithms better understood through visualization</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Animated Concepts & Algorithms</h3>
-                  
-                    <a href="https://rms-sof.github.io/Concepts-Animations/" class="link-item">Learning Concepts & algorithms by animations.</a>
-                         
-                </div>
-            </div>   
-
-
-	<!-- Historical time lines  -->
-            <div class="card timetable">
-                <div class="icon">📅</div>
-                <div class="card-header">
-                    <h2 class="card-title">Timelines of important subjects</h2>
-                    <p class="card-description">Learn about the people and the seminal papers that have impacted the subject domain and worth a mention.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Historical Timelines</h3>
-                    <a href="https://www.youtube.com/watch?v=PMU9ho6NulI" class="link-item">Information & Storage Retrieval - Timeline</a>  
-		    <a href="https://rms-sof.github.io/DL-TimeLine/" class="link-item">Deep Learning - Timeline</a>        
-         
-                </div>
-            </div>
-
- 
-
-        <!-- Concept Videos -->
-            <div class="card calendar">
-                <div class="icon">🎪</div>
-                <div class="card-header">
-                    <h2 class="card-title">Concept Videos</h2>
-                    <p class="card-description">Learn Introductory Concepts before starting detailed study.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Introductory Concepts:</h3>
-
-                    <a href="https://www.youtube.com/watch?v=lwSOI0VlkF8&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk" class="link-item">Tips for success</a>
-		    <a href="https://www.youtube.com/watch?v=EAikorsZB3E&list=PLGJ1tOIRaVQjzUju1OLDQ_lMZpOtJ3E47" class="link-item">Distributed Systems (DS) (BE- VIII) </a>
-		    <a href="https://www.youtube.com/watch?v=a0gkJOlrFIk&list=PLGJ1tOIRaVQiFe0LRcLbyFy_pDtPJ4okQ" class="link-item">SNE (BE- VIII)</a>
- 		    <a href="https://www.youtube.com/watch?v=EYKCVjUA0hE&list=PLGJ1tOIRaVQgc3-rdtbrzT81OgCZmYbVy" class="link-item">Social Computing (SOC)(BE- VIII)</a>
-		    <a href="https://www.youtube.com/watch?v=j9ySth2Km0w&list=PLGJ1tOIRaVQh69EyxSN31KvX4SRV9FH_e" class="link-item">BAI (BE- VIII)</a>
- 		    <a href="https://www.youtube.com/watch?v=WttASb3EuHc&list=PLGJ1tOIRaVQhp3vKgVQiNesgjgsvEvhj-" class="link-item">Information Storage & Retrieval (ISR) (BE- VII)</a>
-		    <a href="https://www.youtube.com/watch?v=2xdQ9J34-q8&list=PLGJ1tOIRaVQiYlA6wNLDT0X97KZ8A4Sgi" class="link-item">Deep Learning (DL) (BE- VII)</a>
- 		    <a href="https://www.youtube.com/watch?v=DYyD9hR1yG4&list=PLGJ1tOIRaVQj8cPDQ9kfrhLbPmjWZPO58" class="link-item">Smart Computing (SMC) (BE- VII)</a>
- 		    <a href="https://www.youtube.com/watch?v=JOt4UBT9cCE&list=PLGJ1tOIRaVQiBKY00O9SgjG-LAc49PkS_" class="link-item">SPM (BE- VII)</a>
- 		    <a href="https://www.youtube.com/watch?v=wnZp6hc81CQ&list=PLGJ1tOIRaVQghnwsuWA6Dir6aM3MLTJmd" class="link-item">DevOps (BE- VII)</a>
-		    <a href="https://www.youtube.com/watch?v=oEHEwNid16s&list=PLGJ1tOIRaVQjNuQQkPGh7As4jvzD9crS3" class="link-item">TOC (TE- V)</a>
-		    <a href="https://www.youtube.com/watch?v=wtcAMojndBE&list=PLGJ1tOIRaVQhshdDhurLEBY3NI6b1y2ox" class="link-item">Machine Learning (ML)(TE- V)</a>    
- 		    <a href="https://www.youtube.com/watch?v=Xk-XZO4C6VI&list=PLGJ1tOIRaVQhQLqW0KtCh_lg0-sJ49nZW" class="link-item">DSBDA (TE- VI)</a>
-		    <a href="https://www.youtube.com/watch?v=8MJE06zY9mE&list=PLGJ1tOIRaVQg7KaQGMdEDmTn7WFRR4Ere" class="link-item">DBMS (SE IV)</a> 		    
- 		    <a href="https://www.youtube.com/watch?v=Acy7IgrZQxQ&list=PLGJ1tOIRaVQh-_NPE3GV1Sob3gRVhApVu" class="link-item">Software Engg (SE IV)</a>
-		      
-                </div>
-            </div>        
-
-
-
-	    <!-- Lab Manuals -->
-            <div class="card timetable">
-                <div class="icon">📅</div>
-                <div class="card-header">
-                    <h2 class="card-title">Lab Manuals</h2>
-                    <p class="card-description">Know the expected output of the Lab Practicals.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Lab Manuals</h3>
-                    <a href="https://docs.google.com/document/d/19w9iiM_gDk_a58S89Lt06MBvNhxKWrT0/edit?usp=sharing&ouid=112955186310509340094&rtpof=true&sd=true" class="link-item">Information Storage & Retrieval</a> 
-      		    <a href="https://drive.google.com/file/d/1l52jDoDd0G06xuhtjR43ne8nnTldsdEs/view?usp=sharing
-" class="link-item">Information Storage & Retrieval (BE 2019 pat)</a> 
-		    <a href="https://drive.google.com/file/d/1xktxwn3GxOOnJLtog_8IwFLdcSJ9-6JX/view?usp=drive_link" class="link-item">Deep Learning (DL) Journal ( BE 2019 pat)</a> 
-                    <a href="https://drive.google.com/file/d/1WN3UXCq6EsHwmnz2GzU8qiiN78lUUnOb/view?usp=drive_link" class="link-item">Distributed Systems (DS) Journal  (BE 2019 pat)</a> 
-		    <a href="https://docs.google.com/document/d/1K5yCrFGbQfBF5AhR-L0aO1ln2kp6QFXoXJVzivW3ono/edit?usp=sharing" class="link-item">Startup & Entreprenuership (SNE) Journal  (BE 2019 pat)</a>
-		    <a href="https://drive.google.com/file/d/1b-UzO8OYUnmzF2nCeiZtBJLevD1sWq4f/view?usp=drive_link" class="link-item">Business Intelligence & Analytics (BIA) Journal  (BE 2019 pat) </a>
-		    <a href="https://drive.google.com/file/d/18aPnG_cpr76X-hn2z1TxkUsnzp0ng6k5/view?usp=drive_link" class="link-item">Cloud Computing (CC) Journal (TE 2019 pat) </a>
-		    <a href="https://drive.google.com/file/d/19M9QJw23bL3UnvL9JCFbmMhCYUIdw97M/view?usp=drive_link
-" class="link-item">LP - I ADBMS Journal (TE 2019 pat) </a>		    
-		    <a href="https://drive.google.com/file/d/1Bf7q0AFZwTFmPGBPHOuYkn59HWKho1EJ/view?usp=drive_link" class="link-item">LP - I Machine Learning Journal (ML)(TE 2019 pat) </a>
-		    <a href="https://drive.google.com/file/d/10g9vcCvWJpqaWrdvd7veDBU8fR3hmzPW/view?usp=sharing" class="link-item"> DSBDA Journal (TE 2019 pat) </a>
-		    <a href="https://drive.google.com/file/d/1G43uT26KmNi9rlntTAfM2wY4kJdZK3Xf/view?usp=sharing" class="link-item">WAD Journal (TE 2019 pat) </a>
-	            <a href="https://drive.google.com/file/d/1ubhygGDexRKGBNI55idmbkoJlI8lg49b/view?usp=sharing" class="link-item">Computer Graphics ( CG ) (SE) </a>
-                </div>
-            </div>
-
-	<!-- Subjective Exam -->
-            <div class="card timetable">
-                <div class="icon">📅</div>
-                <div class="card-header">
-                    <h2 class="card-title">Subjective exams</h2>
-                    <p class="card-description">Check your theoretical knowledge. Write a subject theory exam in proctered environment</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Mock Theory exam</h3>
-                    <a href="https://script.google.com/macros/s/AKfycbzV5ZR_0ilC4vacB6NUpzMhUkUkSYNKBSRsZwpurblUCacNO1EBVS-RHZpSy4G7NqOTKA/exec" class="link-item">Take mock theory exam for  BE IT </a>  
-	            <a href=" https://rms-sof.github.io/ML-subjective/" class="link-item"> Machine Learning (ML)- Take subjective Exam of 30 marks 1 hr duration</a>
-		    <a href="https://script.google.com/macros/s/AKfycbziXx_7wkaThJ0sLgkhZIPE_DV9OSaojFfdeRxWY92tPyGIcbHFrBFYSrvyAbcpXtTo/exec" class="link-item">Take BIA - Unit 1-2 Theory Exam</a>
-		     <a href="https://rms-sof.github.io/DSBDA-subjective/" class="link-item">DSBDA - Take subjective Exam of 30 marks 1 hr duration</a>
-		     <a href="https://rms-sof.github.io/DL-subjective/" class="link-item">Deep Learning (DL) - Take subjective Exam of 30 marks 1 hr duration.</a>
-		     <a href=" https://rms-sof.github.io/ISR-subjective/" class="link-item">Information Storage & Retrieval (ISR) - Take subjective Exam of 30 marks 1 hr duration.</a>
-		     <a href="https://script.google.com/macros/s/AKfycbw8_C10Q66loxuYYA3e1SbpEM1-DougBBQ6Dlv9IQpzXaerCn_XW-o32mL9UBaonNB8IA/exec"  class="link-item">SEIT Exam DSA CCA Unit 6 Test</a>
-		     <a href="https://script.google.com/macros/s/AKfycbwTIq1GKhap5XBU2Jm_ongGYRCYOpNlkhjcMmBdJ7m59zCGBJZgh5jtdZR5owek3ub3/exec"  class="link-item">SEIT Exam OOP CCA Unit 6 Test</a>           
-                </div>
-            </div>
-
-
-	<!-- Oral Exams -->
-            <div class="card timetable">
-                <div class="icon">📅</div>
-                <div class="card-header">
-                    <h2 class="card-title">Mock Oral Exam</h2>
-                    <p class="card-description">Give mock viva-voce exam. Improve your speaking skills to get confidence.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Mock Viva / Oral exam</h3>
-		    <a href="https://script.google.com/macros/s/AKfycbyx9dWZmrKStNcA9OKjxLUo5y1y-bz4NOlSbhwtPbWtxSgYcSZKHK9NwCAlKRpj6qg7/exec" class="link-item">BE Oral- BIA Mock Viva</a>
-                    <a href="https://script.google.com/macros/s/AKfycbwIQYs0RQVhUN6-AhsnJ-L8FFW_g9Quoo8KgpIIHISL7yQQxlCALcInXh-I0ZHb-eA0/exec" class="link-item">BE Oral- Project  Mock Viva</a>
-                    <a href="https://script.google.com/macros/s/AKfycbzHoN4DNRx1C-ikD4eF0wCqf1lhynGctrDNrjyOY4b_4a4dyAddNPUJoLAk_NjzQWfKCA/exec"  class="link-item">BE Oral- ISR - Mock Viva</a>      
-	            <a href="https://script.google.com/macros/s/AKfycbwVlm7YeDC5rze0E884aXXtFtCszi7CXpD7SRZ2-F_TQ6FyJjIXGKr7_HCayYcdW6P7/exec"	class="link-item">SE Oral - OOP Mock Viva</a>	  
-		    <a href="https://script.google.com/macros/s/AKfycbzF3Sn1AisFktidlkbfCaGCdJTBJtMNxElTdj1yU8YCpVDClTLqQu4ljoIj3A-c9cPd/exec" class="link-item">SE Oral- CEP / MiniProject Mock Viva</a>
-		    <a href ="https://script.google.com/macros/s/AKfycbxFWq6Yodv6mebt1V-aYF4xTCAuDuNJM94VC0_xzVgFuc0be-bf7YWIjbL_hWczWPXp/exec" class="link-item">TE Oral- Seminar Mock Viva</a>
-   		     <a href = "https://script.google.com/macros/s/AKfycbxTpOMXJay5zbGiLVXAvwee4tR8j0hWSKt7VdV1H4b24XyC6thZv9srPlrNWz3DuD3bqg/exec" class="link-item"> TE Oral- Internship Mock Exam</a>
-		    <a href="https://script.google.com/macros/s/AKfycbzZ-5fLa_nQGFDBoH0KQ_nDzl_EWceG6nmrSE9vuiTCKbFdvqM4g5DA_prGVpDpHHpD/exec"  class="link-item">BE Oral- SNE Mock Viva</a>		   
-	
- 		</div>
-            </div>
-
-
-                <!-- Self-paced Learning Pathways -->
-            <div class="card stress">
-                <div class="icon">🧘</div>
-                <div class="card-header">
-                    <h2 class="card-title">Personalized  Learning</h2>
-                    <p class="card-description">Are you Curious ? Want to learn independently. </p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Courses</h3>
-                    <a href="https://youtu.be/bmLqbZflhgA" class="link-item"> What is Personalized Learning?</a> 
-                    
-                    <a href="https://drive.google.com/file/d/1vngCskIUUL_-EqeT-8cp1ZrzW8Lm9JU9/view?usp=drive_link" class="link-item">Deep Leaning DL</a>
-                    <a href="https://drive.google.com/file/d/129GzLJorVX1M3CNwJeQ6K2hrJgWkdUT2/view?usp=drive_link" class="link-item">Information Storage & Retrieval ISR</a>
-                    <a href="https://drive.google.com/file/d/14qrIvXWX80XckzdLx1771xm4mZV8gdJo/view?usp=drive_link" class="link-item">Social Computing SOC</a>
-                    <a href="https://drive.google.com/file/d/1_IYyocJfE5AUHp9BwtzCDSyySPpleboI/view?usp=drive_link" class="link-item">Smart Computing SMC</a>
-                    <a href="https://drive.google.com/file/d/1h_3jA0DLvlyquWVI6gk9stZt3hnrGKb7/view?usp=drive_link" class="link-item">Data Science & Big Data Analytics DSBDA</a>
-                    <a href="https://drive.google.com/file/d/1_XaUnsPyFFsKBgDkasXeytyO3opuA-G7/view?usp=drive_link" class="link-item">Machine Learning ML</a>
-                    <a href="https://drive.google.com/file/d/1CmVpl9SHfnvJX4uVSu5Od1b_80xAgN16/view?usp=drive_link" class="link-item">Software Project Management SPM</a>
-                    <a href="https://drive.google.com/file/d/1a-Sh2sJ65lrCsZgOLVk1PaGdag1SLtfd/view?usp=drive_link" class="link-item">Distributed Systems DS</a>
-                    <a href="https://drive.google.com/file/d/1RPReHBk0NjjHw8DtHbLRBP2953f6XZPi/view?usp=drive_link" class="link-item">Try Gamified Lesson Plans for ISR & Deep Learning </a> 
-                    <a href="https://drive.google.com/file/d/12lrx2_4qo90fqwmR3ZbTIV4CebKCQDM-/view" class="link-item"> Flipped Classroom sessions for ISR & DL </a>  
-	 	    <a href="https://www.youtube.com/watch?v=tMXKZpYgPYw" class="link-item"> Life lessons from Computing</a>
-		    <a href="https://www.youtube.com/shorts/zi_LSXm3q4g" class="link-item"> Extracting wisdom from the data</a>
-	            <a href="https://www.youtube.com/watch?v=oARZbwWHi8I" class="link-item"> Integrating { CEP + Seminar + Internship + BE Project } </a>             
-                </div>
-            </div>    
-            
-
- 	<!-- Special topics in Computer Science  -->
-            <div class="card timetable">
-                <div class="icon">📅</div>
-                <div class="card-header">
-                    <h2 class="card-title">Special topics in Computer Science</h2>
-                    <p class="card-description">Learn about Special topics in Computer Science.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Selected topics</h3>
-                     <a href="https://rms-sof.github.io/Distributions/" class="link-item"> Maths series - Distributions</a>
-  		     <a href="https://rms-sof.github.io/stats-tests/" class="link-item"> Maths Series - Statistical Tests</a>
-	      	     <a href="https://rms-sof.github.io/curves-fractals/" class="link-item"> CG Series - Curves & Fractals</a>
-                     <a href="https://rms-sof.github.io/drawing-clipping/" class="link-item">CG Series - Lines Polygons Circle Clipping Filling</a>
-         	     <a href="https://rms-sof.github.io/Decidability/" class="link-item">TOC series - Decidability </a> 
-	             <a href="https://rms-sof.github.io/Complexity/" class="link-item">TOC series - Complexity </a> 
-	             <a href="https://rms-sof.github.io/turing/" class="link-item">TOC series - Turing Machines </a> 
-		     <a href="https://rms-sof.github.io/markov/" class="link-item">DSBDA Series - Markov Chain </a> 
-		     <a href="https://rms-sof.github.io/Flajolet-Martin/" class="link-item">DSBDA Series - Flajolet-Martin Algorithm </a> 
-	             <a href="https://rms-sof.github.io/SRS-Tool/" class="link-item">SW Engg Series - How to extract functional & non-functional requirements from user interview? SRS</a>
-		     <a href="https://rms-sof.github.io/clean-code/" class="link-item">SW Engg Series - Clean Coding Principles</a>
- 		     <a href="https://rms-sof.github.io/SW-efforts-estimator/" class="link-item">SW Engg Series -Software Efforts Estimator (Cocomo, FP, LOC)</a>
-		     <a href="https://rms-sof.github.io/Sorting/" class="link-item">DSA Series - Sorting Algorithms DSA Bubble Merge Quick Selection</a>
-		     <a href=" https://rms-sof.github.io/shortest-path/" class="link-item">DSA Series - Shortest Path Dijkstra Prim Kruskal Floyd-Warshall</a>
-		     <a href="https://rms-sof.github.io/mst/" class="link-item">DSA Series - Minimum Spanning Tree (MST) Algorithms</a>
-		     <a href="https://rms-sof.github.io/Tree-walker/" class="link-item">DSA Series - Tree Traversal DSA Prefix Postfix Infix</a>
-		     <a href="https://rms-sof.github.io/Normalization/" class="link-item"> DBMS Series - Normalization 0NF 1 NF 2NF 3NF BCNF</a>
-                     <a href="https://rms-sof.github.io/Schedule-serializer/" class="link-item">DBMS Series - concurrency control Schedule Serialization </a>
-		     <a href=" https://rms-sof.github.io/cpu-scheduler/" class="link-item">OS Series - CPU Scheduling Algorithms </a>
-                     <a href="https://rms-sof.github.io/page-replacement/" class="link-item">OS Series - Page Replacement Algorithms </a>
-		     <a href="https://rms-sof.github.io/page-replacement/" class="link-item">OS Series - Producer Cosumer, Banker,  Dining Philosopher Algorithms </a>
-
-                </div>
-            </div>
-
-
-
-            <!-- Online Quizzes Card -->
-            <div class="card quiz">
-                <div class="icon">🧠</div>
-                <div class="card-header">
-                    <h2 class="card-title">Online Quizzes</h2>
-                    <p class="card-description">Practice with interactive quizzes, mock tests, and skill assessments for IT syllabus subjects.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Quizzes</h3>
-		    <a href="https://rms-sof.github.io/Programming-Quiz/" class="link-item">Sharpen your programming abilities Quiz</a>
- 		    <a href="https://rms-sof.github.io/AI-login/" class="link-item">Check your knowledge about AI Quiz</a>
- 		    <a href="https://rms-sof.github.io/Agentic-AI-Quiz/" class="link-item">Check your knowledge about Agentic AI Quiz</a>
- 		    <a href="https://rms-sof.github.io/AI-Types-Quiz/" class="link-item">Quiz on AGI ANI ASI</a>
- 		    <a href="https://rms-sof.github.io/Research-methodology/" class="link-item">Quiz on Research Methodology (RM)</a>
-		    <a href="https://rms-sof.github.io/cs-quiz/" class="link-item">Test your fundamental Computing  knowledge Quiz</a>
-		    <a href="https://rms-sof.github.io/DBMS-Quiz/" class="link-item">Database Management System (DBMS) Quiz</a>
-                    <a href="https://rms-sof.github.io/CG-Quiz/" class="link-item">Computer Graphics (CG) Quiz</a>
-		    <a href="https://rms-sof.github.io/CG-Unit12/" class="link-item"> Computer Graphics (CG) - Unit 1 & 2 </a>
-                    <a href="https://rms-sof.github.io/DSA-Quiz/" class="link-item">Data Structures & Algorithms (DSA) Quiz</a>  
-                    <a href="https://rms-sof.github.io/TOC-Quiz/" class="link-item">Theory of Computation (TOC) Quiz</a>
-                    <a href="https://rms-sof.github.io/OS-Quiz/" class="link-item">Operating System (OS) Quiz</a>
-             	    <a href=" https://rms-sof.github.io/Network-quiz/" class="link-item">Computer Networks (CNS) Quiz</a>                    
-		    <a href="https://rms-sof.github.io/ML-Quiz/" class="link-item">Machine Learning (ML) Quiz</a>
-                    <a href="https://rms-sof.github.io/DLQuiz/" class="link-item">Deep Learning (DL) Quiz</a>
-                    <a href="https://rms-sof.github.io/SmCQuiz/" class="link-item">Smart Computing (SMC) Quiz</a>
-                    <a href="https://rms-sof.github.io/PythonQuiz/" class="link-item">Python Programming Quiz</a>
-		    <a href="https://rms-sof.github.io/DSQuiz/" class="link-item">Distributed Systems (DS) Quiz</a>
-                    <a href="https://rms-sof.github.io/ISRQuiz/" class="link-item">Information Storage & Retrieval (ISR) Quiz</a>
-	   	    <a href="https://rms-sof.github.io/SoCQuiz/" class="link-item">Social Computing (SOC) Quiz</a>
-		    <a href=" https://rms-sof.github.io/AI-Quiz/" class="link-item">AI Quiz for all</a>
-		    <a href="https://rms-sof.github.io/Language-Profeciency-Tester/" class="link-item">Programming Languages Proficiency Quiz</a>
-		    
-                </div>
-            </div>
-
-		 <!-- NBNSTIC-IT Location bound Exams  -->
-            <div class="card timetable">
-                <div class="icon">📅</div>
-                <div class="card-header">
-                    <h2 class="card-title">NBNSTIC-IT Dept Location bound Exams</h2>
-                    <p class="card-description">Be present in NBNSTIC-IT Department to give following exams.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">NBNSTIC-IT  Exams</h3>
-                    <a href="https://script.google.com/macros/s/AKfycbwSrhUuNDQEYoatkvFnnMGz8WYZignLbhRXqS_0bb_MUPqPjS-OlXgEgmaIFC5wTuRW/exec" class="link-item">Take Rapidfire MCQs Exam</a>          
-         	     <a href="https://script.google.com/macros/s/AKfycbwrOloKfxFkG88Lp4x_ihjGhHePVvh8ygsvZDtvqiDHOzlLOaC2Z7jAlHIdUxmJGKcrlQ/exec" class="link-item"> Start IT MCQs Exam</a> 
-	             <a href="https://script.google.com/macros/s/AKfycbxPYu-DWjpZjzsFOFhlLWdOU1rb4UfaHHpRhMpKTJY4ihwctUjmb9NLAizW_LdwbokOuw/exec" class="link-item">Try out Proctored MCQs Exam </a>
-		     <a href="https://script.google.com/macros/s/AKfycbyXP-eVDBtThRK-LPCeYfTAZzgWK9aFEPrEF6PJu1InYI8mvkSOt8aq3wIUz9XcsLBo/exec" class="link-item">BIA MCQs Exam</a>
-                </div>
-            </div>
-      
-
-	<!-- Employability Card -->
-            <div class="card admin">
-                <div class="icon">⚡</div>
-                <div class="card-header">
-                    <h2 class="card-title">Employability</h2>
-                    <p class="card-description">Improve your chances of getting a campus placement.Streamline your skills and attitude.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Employability</h3>
-                    <a href="https://youtu.be/JzsmpQfVRjY" class="link-item"> Make your IT career future-proof</a>
-                    <a href="https://www.youtube.com/watch?v=riHjSprhdz8&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=29" class="link-item">IT Syllabus Technical Brush-up before placement</a>
-	            <a href="https://youtu.be/gl3JOzEIlyk" class="link-item">Know about Changing skill-set required for IT careers</a>
-                    <a href="https://www.youtube.com/watch?v=zGmS-wy3ZpI&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=9" class="link-item">How to build Capacity for a job?</a>
-                    <a href="https://youtu.be/5sBcpNGYn8M" class="link-item"> What do companies want?</a>
-                    <a href="https://www.youtube.com/watch?v=ZUaYFVYit90&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=24" class="link-item">Understanding about Employability</a>
-                    <a href="https://www.youtube.com/watch?v=9PIIA97XQjY&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=16" class="link-item">How to crack Technical Interview?</a>
-                    <a href="https://www.youtube.com/watch?v=U6tJLRJUwU8&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=7" class="link-item">How to become Employable?</a>
-                    <a href="https://www.youtube.com/watch?v=zc4HH5Grbc0&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=21" class="link-item">Alumni Advice for success</a>
-                </div>
-            </div>                     
-	
-	
-
- 	    <!-- Research & Innovation Card -->
-            <div class="card research">
-                <div class="icon">🔬</div>
-                <div class="card-header">
-                    <h2 class="card-title">Research & Innovation</h2>
-                    <p class="card-description">Explore undergrad level research concepts like  research methodology, IPR and Patents to fuel your academic curiosity.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Quick Access Links:</h3>
-		    <a href="https://youtu.be/ssitnpGdfs8" class="link-item">How to write a research paper?</a>
-                     <a href="https://rms-sof.github.io/IT-Motivate/" class="link-item">Constant Motivation</a>
-                    <a href="https://www.youtube.com/watch?v=afrEslTjm0Y&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=8" class="link-item">what is Research Methodolgy?</a>
-                    <a href="https://www.youtube.com/watch?v=D_sQBHPXL5w&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=13" class="link-item">Research outputs - Publications, IPR and Patents</a>
-                    <a href="https://www.youtube.com/watch?v=4eBQ1Xhaxrg&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=11" class="link-item">Guidelines for Using AI in your research</a>
-                    <a href="https://www.youtube.com/watch?v=oARZbwWHi8I&list=PLGJ1tOIRaVQhzXUOew2YuhhPWXRU6EhMk&index=2" class="link-item">How to do Research & Study together?</a>
-		    <a href="https://docs.google.com/document/d/1E3vHiDq1CC43K-wp2PfR3f-4zZgQn1dFHwM1KtURfks/edit?usp=sharing"	class="link-item">Avishkar (आविष्कार) Research Competition Guidance</a>
-		    <a href="https://scholar.google.co.in/citations?user=ghoW_6AAAAAJ&hl=en" class="link-item">HOD's (Rahul Samant) Research Profile</a>
-	
-                </div>
-            </div>
-
- 	    <!-- Useful Utilities  -->
-            <div class="card timetable">
-                <div class="icon">📅</div>
-                <div class="card-header">
-                    <h2 class="card-title">Useful Utilities to make life simpler</h2>
-                    <p class="card-description">Stay organized with your life. Learn the ways to be more healthy & productive.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Useful Utilities:</h3>
-                    <a href="https://rms-sof.github.io/Edu-Utilities/" class="link-item">Check out productivity increasing solutions</a>          
-         
-                </div>
-            </div>
-
-
-	<!-- Brain Games  -->
-            <div class="card timetable">
-                <div class="icon">📅</div>
-                <div class="card-header">
-                    <h2 class="card-title">Games</h2>
-                    <p class="card-description">Take a break. Try these non-addictive & Dopamine Detoxing tiny games.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">Brain Games</h3>
-                    <a href="https://rms-sof.github.io/PuzzleParadise/" class="link-item">Puzzles</a>
-                   <a href="https://rms-sof.github.io/GameArcade/" class="link-item">Dopamine DeTox Games</a>
-  		   <a href="https://rms-sof.github.io/QuotableQuotes/" class="link-item">Get recharged</a>
-                   <a href=" https://rms-sof.github.io/wordbuilder/" class="link-item">Word Builder Game</a>
-		   <a href=" https://rms-sof.github.io/scramble-game/" class="link-item">Unscramble Word Game</a>
-		   <a href="https://rms-sof.github.io/PairTicTacToe/" class="link-item"> Two player - Tic-Tac-Toe</a>
-		   <a href="https://rms-sof.github.io/DotBox/" class="link-item">Two Player - Dot & Box Game</a>              
-                </div>
-            </div>
-
-    
- 	    <!-- Philosphy Card -->
-            <div class="card admin">
-                <div class="icon">⚡</div>
-                <div class="card-header">
-                    <h2 class="card-title">Philosophy</h2>
-                    <p class="card-description">Be calm. Be with the greats to be great.</p>
-                </div>
-                <div class="links-section">
-                    <h3 class="links-title">तत्त्वज्ञान </h3>
-                    <a href="https://rms-sof.github.io/Geeta-geetai/" class="link-item">Geeta गीता-गीताई </a>
-                    <a href="https://docs.google.com/document/d/1DHyQwn51LylEYqUL8uh24AKd0X7idMODNsGNDOiRKFw/edit?usp=sharing" class="link-item">Haripath हरिपाठ </a>
-		    <a href="https://drive.google.com/file/d/1mEcYPX9ygsV5zyOH-i4xCbd6dGSMbZFS/view?usp=drive_link" class="link-item">Sanskrit संस्कृत श्लोक </a>
-                    <a href="https://rms-sof.github.io/Life-Q/" class="link-item">Get inspired!</a>
-                    <a href="https://rms-sof.github.io/Profession-Q/" class="link-item">Professional Quotable Quotes</a>                 
-                    <a href="https://rms-sof.github.io/Subhashite/" class="link-item">Subhashit Mala सुभाषित माला  </a>
-                    <a href="https://docs.google.com/document/d/1exG7ZGCgqFKhrN0szDHz9afUfGQL5XnSMcUKcadk2sU/edit?usp=sharing" class="link-item">Aarati Sangrah आरती संग्रह</a>
-
-
-
-
-
-
-
-
-</div>
-</div>
-
-<script>
-document.getElementById("searchInput").addEventListener("keyup", function () {
-    const query = this.value.toLowerCase().trim();
-    const cards = document.querySelectorAll(".card");
-
-    cards.forEach(card => {
-        let match = false;
-        const text = card.innerText.toLowerCase();
-
-        if (text.includes(query)) match = true;
-
-        const links = card.querySelectorAll(".link-item");
-        links.forEach(link => {
-            if (query === "" || link.innerText.toLowerCase().includes(query)) {
-                link.style.display = "block";
-            } else {
-                link.style.display = "none";
-            }
-        });
-
-        card.style.display = (match || query === "") ? "flex" : "none";
-    });
-});
-</script>
-<!-- ===================== FOOTER ===================== -->
-<footer style="
-    margin-top: 60px;
-    padding: 25px 20px;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #cfd6ff;
-    background: linear-gradient(180deg, #0e132e, #080b1a);
-    border-top: 1px solid rgba(150,170,255,0.25);
-    box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
-">
+<footer>
     <div style="margin-bottom: 8px;">
         © 2026 <strong>EcoSystem</strong> | Designed by Prof. Rahul M. Samant | HOD-IT , NBNSTIC.
     </div>
-
     <div style="margin-bottom: 8px; opacity: 0.85;">
         Designed for mindful learning, academic planning, and student well-being
     </div>
-
     <div style="opacity: 0.75; font-size: 0.85rem;">
         <strong>Welcome back! </strong>
     </div>
 </footer>
 
+<script>
+    const searchInput = document.getElementById("searchInput");
+    const micBtn = document.getElementById("micBtn");
+    let isListening = false; // Flag to track state
 
+    /* =========================================
+       CORE SEARCH LOGIC
+       ========================================= */
+    function performSearch(query) {
+        query = query.toLowerCase().trim();
+        const cards = document.querySelectorAll(".card");
+
+        cards.forEach(card => {
+            let cardMatch = false;
+
+            // 1. Check Card Header (Title & Description)
+            const title = card.querySelector(".card-title")?.innerText.toLowerCase() || "";
+            const desc = card.querySelector(".card-description")?.innerText.toLowerCase() || "";
+            
+            if (title.includes(query) || desc.includes(query)) {
+                cardMatch = true;
+            }
+
+            // 2. Check Individual Links
+            const links = card.querySelectorAll(".link-item");
+            let linkMatch = false;
+
+            links.forEach(link => {
+                const linkText = link.innerText.toLowerCase();
+                // If query is empty, show all links; otherwise filter
+                if (query === "" || linkText.includes(query)) {
+                    link.style.display = "block";
+                    if (query !== "") linkMatch = true;
+                } else {
+                    link.style.display = "none";
+                }
+            });
+
+            // 3. Toggle Card Visibility
+            // Show card if search is empty OR if (header matches OR any link matches)
+            if (query === "") {
+                card.style.display = "flex"; 
+            } else {
+                card.style.display = (cardMatch || linkMatch) ? "flex" : "none";
+            }
+        });
+    }
+
+    // Event Listener: Type to Search
+    searchInput.addEventListener("keyup", function () {
+        performSearch(this.value);
+    });
+
+    /* =========================================
+       SPEECH RECOGNITION LOGIC
+       ========================================= */
+    // Browser Compatibility Check
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+
+        // Configuration
+        recognition.continuous = false; // Stop after one phrase
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+
+        // Toggle Microphone
+        micBtn.addEventListener("click", function () {
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
+
+        // Lifecycle Events
+        recognition.onstart = function () {
+            isListening = true;
+            micBtn.classList.add("listening");
+            searchInput.classList.add("listening-mode");
+            searchInput.placeholder = "Listening... Speak now";
+        };
+
+        recognition.onend = function () {
+            isListening = false;
+            micBtn.classList.remove("listening");
+            searchInput.classList.remove("listening-mode");
+            
+            // Restore placeholder if empty
+            if (searchInput.value.trim() === '') {
+                searchInput.placeholder = "Search resources...";
+            }
+        };
+
+        recognition.onresult = function (event) {
+            const transcript = event.results[0][0].transcript;
+            
+            // Update UI & Trigger Search
+            searchInput.value = transcript;
+            performSearch(transcript);
+            searchInput.focus(); // Bring focus to input for manual correction
+        };
+
+        recognition.onerror = function (event) {
+            isListening = false;
+            micBtn.classList.remove("listening");
+            searchInput.classList.remove("listening-mode");
+            
+            console.error("Speech Recognition Error:", event.error);
+
+            if (event.error === 'no-speech') {
+                searchInput.placeholder = "No speech detected. Try again.";
+            } else if (event.error === 'not-allowed') {
+                alert("Microphone access is blocked. Please allow permissions in your browser settings.");
+                searchInput.placeholder = "Mic blocked. Check permissions.";
+            } else {
+                searchInput.placeholder = "Error occurred. Please type.";
+            }
+
+            // Reset placeholder after delay
+            setTimeout(() => {
+                if(!isListening && searchInput.value === '') {
+                    searchInput.placeholder = "Search resources...";
+                }
+            }, 3000);
+        };
+
+    } else {
+        // Fallback for unsupported browsers
+        micBtn.style.display = "none";
+        searchInput.style.paddingRight = "18px"; // Reset padding
+        console.warn("Web Speech API not supported in this browser.");
+    }
+</script>
 </body>
 </html>
