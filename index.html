@@ -1009,5 +1009,628 @@
         console.warn("Web Speech API not supported in this browser.");
     }
 </script>
+
+<!-- ===================== ECOSYSTEM CHATBOT WIDGET ===================== -->
+<style>
+  /* ---- Floating Toggle Button ---- */
+  #eco-chat-fab {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 9999;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 28px rgba(102,126,234,0.55), 0 2px 8px rgba(0,0,0,0.5);
+    transition: transform 0.3s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s ease;
+    animation: fabPop 0.5s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes fabPop {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+  #eco-chat-fab:hover {
+    transform: scale(1.12);
+    box-shadow: 0 10px 36px rgba(102,126,234,0.75), 0 4px 12px rgba(0,0,0,0.5);
+  }
+  #eco-chat-fab svg { transition: transform 0.4s ease; }
+  #eco-chat-fab.open svg.chat-icon  { display: none; }
+  #eco-chat-fab.open svg.close-icon { display: block !important; }
+
+  /* Notification pulse on FAB */
+  #eco-chat-fab::after {
+    content: '';
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: #43e97b;
+    border: 2px solid #0b0e1a;
+    animation: blink 2.5s infinite;
+  }
+  #eco-chat-fab.open::after { display: none; }
+  @keyframes blink {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.3; }
+  }
+
+  /* ---- Chat Panel ---- */
+  #eco-chat-panel {
+    position: fixed;
+    bottom: 102px;
+    right: 28px;
+    z-index: 9998;
+    width: 380px;
+    max-height: 580px;
+    border-radius: 22px;
+    background: linear-gradient(160deg, #1b2142, #0e1224);
+    border: 1px solid rgba(150,170,255,0.25);
+    box-shadow: 0 30px 70px rgba(0,0,0,0.85), 0 0 40px rgba(102,126,234,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: scale(0.85) translateY(30px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.35s cubic-bezier(.2,.8,.2,1), opacity 0.3s ease;
+    transform-origin: bottom right;
+  }
+  #eco-chat-panel.visible {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Panel Header */
+  .eco-chat-header {
+    padding: 18px 20px 16px;
+    background: linear-gradient(135deg, rgba(102,126,234,0.25), rgba(118,75,162,0.2));
+    border-bottom: 1px solid rgba(150,170,255,0.18);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .eco-chat-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    box-shadow: 0 0 14px rgba(102,126,234,0.5);
+    flex-shrink: 0;
+  }
+  .eco-chat-header-text { flex: 1; min-width: 0; }
+  .eco-chat-header-text h4 {
+    font-size: 0.95rem; font-weight: 700;
+    color: #f2f5ff; margin: 0 0 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .eco-chat-header-text span {
+    font-size: 0.75rem; color: #9aa3ff;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .eco-status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%; background: #43e97b;
+    display: inline-block;
+    box-shadow: 0 0 6px #43e97b;
+    animation: blink 2.5s infinite;
+  }
+  .eco-chat-clear-btn {
+    background: none; border: none;
+    color: #9aa3ff; cursor: pointer;
+    font-size: 0.75rem; padding: 4px 8px;
+    border-radius: 8px; transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .eco-chat-clear-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+
+  /* Messages Area */
+  #eco-chat-messages {
+    flex: 1; overflow-y: auto;
+    padding: 16px 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    scroll-behavior: smooth;
+  }
+  #eco-chat-messages::-webkit-scrollbar { width: 4px; }
+  #eco-chat-messages::-webkit-scrollbar-track { background: transparent; }
+  #eco-chat-messages::-webkit-scrollbar-thumb { background: rgba(150,170,255,0.25); border-radius: 4px; }
+
+  /* Message Bubbles */
+  .eco-msg {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    animation: msgIn 0.3s cubic-bezier(.2,.8,.2,1) both;
+    word-break: break-word;
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .eco-msg.bot {
+    align-self: flex-start;
+    background: linear-gradient(160deg, #1e2650, #161d42);
+    border: 1px solid rgba(150,170,255,0.2);
+    color: #e8ecff;
+    border-bottom-left-radius: 4px;
+  }
+  .eco-msg.user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+    box-shadow: 0 4px 14px rgba(102,126,234,0.35);
+  }
+  .eco-msg a {
+    color: #90b0ff;
+    text-decoration: underline;
+    text-decoration-color: rgba(144,176,255,0.4);
+  }
+  .eco-msg a:hover { color: #c4d8ff; }
+
+  /* Typing indicator */
+  .eco-typing {
+    align-self: flex-start;
+    background: linear-gradient(160deg, #1e2650, #161d42);
+    border: 1px solid rgba(150,170,255,0.2);
+    border-radius: 16px; border-bottom-left-radius: 4px;
+    padding: 12px 18px;
+    display: flex; gap: 5px; align-items: center;
+    animation: msgIn 0.3s ease both;
+  }
+  .eco-typing span {
+    width: 7px; height: 7px;
+    background: #9aa3ff; border-radius: 50%;
+    animation: typeBounce 1.2s infinite;
+  }
+  .eco-typing span:nth-child(2) { animation-delay: 0.2s; }
+  .eco-typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typeBounce {
+    0%,80%,100% { transform: translateY(0); opacity: 0.5; }
+    40%          { transform: translateY(-6px); opacity: 1; }
+  }
+
+  /* Quick Reply Chips */
+  .eco-chips {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 2px 0 4px;
+    align-self: flex-start;
+  }
+  .eco-chip {
+    background: rgba(102,126,234,0.15);
+    border: 1px solid rgba(102,126,234,0.35);
+    color: #aab8ff;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .eco-chip:hover {
+    background: rgba(102,126,234,0.3);
+    color: #fff; border-color: rgba(102,126,234,0.7);
+    transform: translateY(-1px);
+  }
+
+  /* Input Area */
+  .eco-chat-footer {
+    padding: 12px 14px 14px;
+    border-top: 1px solid rgba(150,170,255,0.15);
+    display: flex; gap: 8px; align-items: flex-end;
+    flex-shrink: 0;
+  }
+  #eco-chat-input {
+    flex: 1;
+    background: linear-gradient(180deg, #14182f, #0e1224);
+    border: 1px solid rgba(140,160,255,0.2);
+    border-radius: 14px;
+    color: #fff;
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    outline: none;
+    resize: none;
+    min-height: 42px; max-height: 110px;
+    line-height: 1.4;
+    font-family: inherit;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    overflow-y: auto;
+  }
+  #eco-chat-input::placeholder { color: #6a73b0; }
+  #eco-chat-input:focus {
+    border-color: rgba(102,126,234,0.55);
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
+  }
+  #eco-chat-send {
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    box-shadow: 0 4px 14px rgba(102,126,234,0.4);
+  }
+  #eco-chat-send:hover:not(:disabled) {
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(102,126,234,0.6);
+  }
+  #eco-chat-send:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+  #eco-chat-send svg { width: 18px; height: 18px; }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    #eco-chat-panel { width: calc(100vw - 24px); right: 12px; bottom: 90px; }
+    #eco-chat-fab { right: 16px; bottom: 16px; }
+  }
+</style>
+
+<!-- FAB Toggle Button -->
+<button id="eco-chat-fab" title="Chat with EcoSystem Assistant" aria-label="Open chat">
+  <svg class="chat-icon" xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+  <svg class="close-icon" style="display:none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
+
+<!-- Chat Panel -->
+<div id="eco-chat-panel" role="dialog" aria-label="EcoSystem Chat Assistant">
+  <div class="eco-chat-header">
+    <div class="eco-chat-avatar">🌿</div>
+    <div class="eco-chat-header-text">
+      <h4>EcoSystem Assistant</h4>
+      <span><span class="eco-status-dot"></span> Prof. Rahul M. Samant's Portal</span>
+    </div>
+    <button class="eco-chat-clear-btn" id="eco-clear-btn" title="Clear chat">↺ Clear</button>
+  </div>
+
+  <div id="eco-chat-messages" role="log" aria-live="polite"></div>
+
+  <div class="eco-chat-footer">
+    <textarea id="eco-chat-input" placeholder="Ask me anything about EcoSystem..." rows="1"></textarea>
+    <button id="eco-chat-send" disabled title="Send message">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* ===== CONFIG ===== */
+  const GROQ_API_KEY = "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";
+  const GROQ_MODEL   = "llama-3.3-70b-versatile";
+  const GROQ_URL     = "https://api.groq.com/openai/v1/chat/completions";
+
+  const SYSTEM_PROMPT = `You are the friendly and helpful AI assistant for EcoSystem 2026, a comprehensive Student Help Portal created by Prof. Rahul M. Samant, HOD-IT at NBNSTIC (Narayan Bhagwantrao Nominal Sanstha Trust Institute of Computer). You speak in a warm, encouraging, and concise tone.
+
+Your role is to help IT students navigate the portal, find resources, and answer academic questions.
+
+=== PORTAL OVERVIEW ===
+EcoSystem 2026 has 250+ Mindful Consultations, 150+ Academic Tools, and 100+ Mock Exams & Quizzes. It supports SEIT (SE IT), TEIT (TE IT), and BE IT students.
+
+=== SECTIONS & KEY LINKS ===
+
+1. IDEATION & FEEDBACK
+   - Introduction to EcoSystem (Google Doc)
+   - EcoSystem in Marathi (Drive)
+   - Schedule appointment with Prof. Rahul: https://script.google.com/macros/s/AKfycbyU5...
+   - Minutes of Meetings, Leave Sanction System, MOM System
+   - Rate your IT Department, Happy Birthday Card Registration
+   - NBNSTIC IT Progress Book (Progress Tracker)
+   - Give feedback form
+
+2. ONLINE SUBMISSIONS
+   - BE Sem 7 Academic Progress Tracker
+   - BE Sem 8 Academic Progress Tracker
+   - Upload theory assignments
+   - Track Theory Assignment Status
+   - Apply for BE IT Submission Ticket
+   - Subjects: ISR, Deep Learning (DL), Smart Computing (SMC), Distributed Systems (DS), Social Computing (SOC), EVS, UHVPE
+
+3. ENHANCE YOURSELF
+   - Student Advisory for Good Academic Life (YouTube)
+   - Importance of Regular Attendance (YouTube)
+   - Professional help videos on Universal Human Values, Harmony in Coding, Management Principles
+   - Addiction videos: How games & reels are made addictive
+   - Health & Happiness: https://rms-sof.github.io/Healthy-Happy/
+
+4. ACADEMIC RESOURCES
+   - Submission Schedules & Calendars
+   - IT Skills Map
+   - Current Timetable (Google Sheets)
+   - Current Academic Calendar
+   - Mark your Presence / Check your Presence
+   - IT Course Entire Syllabus
+   - NBNSTIC-IT Newsletters
+   - Apply for leave
+
+5. ALGORITHMS BY VISUALIZATION
+   - Learning Concepts & Algorithms using Animations: https://rms-sof.github.io/Concepts-Animations/
+
+6. HISTORICAL TIMELINES
+   - ISR Historical Timeline (YouTube)
+   - Deep Learning Historical Timeline: https://rms-sof.github.io/DL-TimeLine/
+
+7. CONCEPT VIDEOS (YouTube Playlists by Prof. Rahul)
+   - Distributed Systems (DS) - BE VIII
+   - SNE - BE VIII
+   - Social Computing (SOC) - BE VIII
+   - BAI - BE VIII
+   - ISR - BE VII
+   - Deep Learning (DL) - BE VII
+   - Smart Computing (SMC) - BE VII
+   - SPM - BE VII, DevOps - BE VII
+   - TOC - TE V, Machine Learning (ML) - TE V
+   - DSBDA - TE VI, WAD - TE, DBMS - SE IV, Software Engineering - SE IV
+
+8. SUBJECT OVERVIEW BY AI
+   - ML, SMC, SOC, ISR, DL, DSBDA, TOC, DS, CNS, WAD, DevOps, SDM, SE, PM, SPM, Maths in Computing, Digital Library
+   - AI Evolution, Agentic AI Education, BIA, GenAI
+   - Links: https://rms-sof.github.io/[subject]-ai/ pattern
+
+9. LAB MANUALS
+   - ISR, Deep Learning, Distributed Systems, SNE, BIA, Cloud Computing, ML, DSBDA, WAD, CG, ADBMS — all BE 2019 pat journals on Google Drive
+
+10. SUBJECTIVE EXAMS (Mock Theory)
+    - Mock theory BE IT exam
+    - ML Subjective (30 marks, 1hr)
+    - DSBDA Subjective (30 marks, 1hr)
+    - DL Subjective (30 marks, 1hr)
+    - ISR Subjective (30 marks, 1hr)
+    - BIA Unit 1-2 Theory Exam
+    - SEIT DSA CCA Unit 6 Test, SEIT OOP CCA Unit 6 Test
+
+11. MOCK ORAL / VIVA EXAMS
+    - BE Oral: BIA, Project, ISR, SNE Mock Viva
+    - SE Oral: OOP, CEP/MiniProject Mock Viva
+    - TE Oral: Seminar, Internship Mock Viva
+    - CG SE 2024 Pat Oral: https://rms-sof.github.io/CG-Oral-Prep/
+    - BIA BE Oral Prep: https://rms-sof.github.io/BIA-oral-prep/
+
+12. PERSONALIZED LEARNING
+    - What is Personalized Learning? (YouTube)
+    - Course materials for DL, ISR, SOC, SMC, DSBDA, ML, SPM, DS
+    - Gamified Lesson Plans for ISR & DL
+    - Flipped Classroom sessions
+    - Core IT Thinking Skills, Life Lessons from Computing, Digital Library
+
+13. SPECIAL CS TOPICS
+    - Maths: Distributions, Statistical Tests
+    - CG: Curves & Fractals, Lines/Polygons/Clipping
+    - TOC: Decidability, Complexity, Turing Machines
+    - DSBDA: Markov Chain, Flajolet-Martin Algorithm
+    - SW Engg: SRS Tool, Clean Code, Software Efforts Estimator (COCOMO/FP/LOC), Vibe Coding
+    - DSA: Sorting (Bubble/Merge/Quick), Shortest Path (Dijkstra/Prim/Kruskal), MST, Tree Traversal
+    - DBMS: Normalization (0NF-BCNF), Concurrency Control
+    - OS: CPU Scheduling, Page Replacement, Producer-Consumer, Banker, Dining Philosopher
+    - All at: https://rms-sof.github.io/[topic]/ pattern
+
+14. ONLINE QUIZZES
+    - Programming, AI, Agentic AI, AGI/ANI/ASI, Research Methodology
+    - CS Fundamentals, DBMS, CG, DSA, TOC, OS, CNS, ML, DL, SMC, Python
+    - DS, ISR, SOC, Distributed Systems, General Knowledge AI
+    - Links: https://rms-sof.github.io/[Subject]-Quiz/ pattern
+
+15. LOCATION-BOUND EXAMS (NBNSTIC-IT On-premise)
+    - Rapidfire MCQs, Start IT MCQs, Proctored MCQs, BIA MCQs Exam
+
+16. EMPLOYABILITY / CAREER PREP
+    - Make IT Career Future-proof (YouTube)
+    - How to Crack Technical Interview
+    - IT Syllabus Technical Brush-up
+    - What do companies want?, How to become Employable?
+    - Green IT – Sustainable IT: https://rms-sof.github.io/Green-IT/
+
+17. RESEARCH & INNOVATION
+    - How to write a research paper? (YouTube)
+    - Research Methodology, Publications, IPR & Patents
+    - Guidelines for Using AI in Research
+    - Digital Library, Avishkar (आविष्कार) Research Competition Guidance
+    - HOD's Google Scholar Profile
+
+18. USEFUL UTILITIES
+    - Productivity Solutions, Age Detector, Age Gate
+    - EcoSystem Guide: https://rms-sof.github.io/EcoSystem-Assistant/
+    - EcoSystem मदतनीस (Marathi): https://rms-sof.github.io/Marathi-assistant/
+
+19. IT DEPARTMENT AUTOMATED WORKFLOWS
+    - MoM Distribution, Leave Application, Mark/Check Presence, Newsletters
+
+20. GAMES (Dopamine Detox)
+    - Game Design with Psychology & CS
+    - Puzzle Paradise, GameArcade, Word Builder, Unscramble, Tic-Tac-Toe, Dot & Box
+    - Links: https://rms-sof.github.io/[game]/
+
+21. TEACHING AIDS
+    - Bloom's Taxonomy for paper setting (YouTube)
+    - Using AI in academic content preparation (YouTube)
+
+22. PHILOSOPHY (तत्त्वज्ञान)
+    - Geeta (गीता-गीताई): https://rms-sof.github.io/Geeta-geetai/
+    - Haripath हरिपाठ, Get Inspired!, Sanskrit Shlokas
+    - Professional Quotes, Subhashit Mala, Aarati Sangrah
+
+=== HOW TO HELP ===
+- If a student asks about a subject or resource, point them to the relevant section and link.
+- If asked about assignments or submissions, guide them to the Online Submissions section.
+- If asked about exams, distinguish between Subjective, Oral/Viva, MCQ, and Location-Bound exams.
+- Keep answers concise and friendly. Use bullet points sparingly — prefer short paragraphs.
+- If you don't know a specific link or answer, say so honestly and suggest they search on the portal.
+- Always encourage students warmly. 🌿`;
+
+  /* ===== STATE ===== */
+  let chatHistory = [];
+  let isProcessing = false;
+
+  /* ===== DOM ===== */
+  const fab       = document.getElementById("eco-chat-fab");
+  const panel     = document.getElementById("eco-chat-panel");
+  const messages  = document.getElementById("eco-chat-messages");
+  const input     = document.getElementById("eco-chat-input");
+  const sendBtn   = document.getElementById("eco-chat-send");
+  const clearBtn  = document.getElementById("eco-clear-btn");
+
+  /* ===== HELPERS ===== */
+  function appendMessage(role, html) {
+    const div = document.createElement("div");
+    div.className = "eco-msg " + role;
+    div.innerHTML = html;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+  function showTyping() {
+    const el = document.createElement("div");
+    el.className = "eco-typing";
+    el.id = "eco-typing-indicator";
+    el.innerHTML = "<span></span><span></span><span></span>";
+    messages.appendChild(el);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function hideTyping() {
+    const el = document.getElementById("eco-typing-indicator");
+    if (el) el.remove();
+  }
+
+  function showChips(chips) {
+    const wrap = document.createElement("div");
+    wrap.className = "eco-chips";
+    chips.forEach(text => {
+      const btn = document.createElement("button");
+      btn.className = "eco-chip";
+      btn.textContent = text;
+      btn.onclick = () => { wrap.remove(); sendMessage(text); };
+      wrap.appendChild(btn);
+    });
+    messages.appendChild(wrap);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function simpleMarkdown(text) {
+    return text
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.*?)\*/g, "<em>$1</em>")
+      .replace(/`(.*?)`/g, "<code style='background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:4px;font-size:0.85em'>$1</code>")
+      .replace(/(https?:\/\/[^\s<>"]+)/g, '<a href="$1" target="_blank" rel="noopener">🔗 Open Link</a>')
+      .replace(/\n/g, "<br>");
+  }
+
+  /* ===== WELCOME ===== */
+  function showWelcome() {
+    messages.innerHTML = "";
+    appendMessage("bot", "👋 <strong>Welcome to EcoSystem 2026!</strong><br>I'm your AI guide for Prof. Rahul M. Samant's student portal. I can help you find resources, exams, quizzes, lab manuals, and much more.");
+    showChips(["📚 Find study resources", "📝 Submit assignments", "🎯 Take a quiz", "🗓️ Check timetable", "💼 Career & Employability", "🎮 Brain Games"]);
+    chatHistory = [];
+  }
+
+  /* ===== API CALL ===== */
+  async function callGroq(userText) {
+    chatHistory.push({ role: "user", content: userText });
+
+    const response = await fetch(GROQ_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + GROQ_API_KEY
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        max_tokens: 700,
+        temperature: 0.65,
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          ...chatHistory
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err?.error?.message || "API error " + response.status);
+    }
+
+    const data = await response.json();
+    const reply = data.choices?.[0]?.message?.content || "Sorry, I couldn't generate a response.";
+    chatHistory.push({ role: "assistant", content: reply });
+
+    // Keep history manageable (last 16 exchanges)
+    if (chatHistory.length > 32) chatHistory = chatHistory.slice(-32);
+    return reply;
+  }
+
+  /* ===== SEND ===== */
+  async function sendMessage(text) {
+    text = (text || input.value).trim();
+    if (!text || isProcessing) return;
+
+    isProcessing = true;
+    sendBtn.disabled = true;
+    input.value = "";
+    input.style.height = "auto";
+
+    appendMessage("user", simpleMarkdown(text));
+    showTyping();
+
+    try {
+      const reply = await callGroq(text);
+      hideTyping();
+      appendMessage("bot", simpleMarkdown(reply));
+    } catch (err) {
+      hideTyping();
+      appendMessage("bot", "⚠️ <strong>Oops!</strong> " + simpleMarkdown(err.message) + "<br><small>Please check your connection and try again.</small>");
+    }
+
+    isProcessing = false;
+    sendBtn.disabled = input.value.trim() === "";
+    input.focus();
+  }
+
+  /* ===== EVENT LISTENERS ===== */
+  fab.addEventListener("click", () => {
+    const isOpen = panel.classList.toggle("visible");
+    fab.classList.toggle("open", isOpen);
+    if (isOpen) {
+      if (!messages.children.length) showWelcome();
+      setTimeout(() => input.focus(), 300);
+    }
+  });
+
+  clearBtn.addEventListener("click", showWelcome);
+
+  input.addEventListener("input", function () {
+    sendBtn.disabled = this.value.trim() === "" || isProcessing;
+    this.style.height = "auto";
+    this.style.height = Math.min(this.scrollHeight, 110) + "px";
+  });
+
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      if (!sendBtn.disabled) sendMessage();
+    }
+  });
+
+  sendBtn.addEventListener("click", () => sendMessage());
+})();
+</script>
+<!-- ===== END ECOSYSTEM CHATBOT WIDGET ===== -->
 </body>
 </html>
