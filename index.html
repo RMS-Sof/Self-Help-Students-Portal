@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Help Portal | EcoSystem 2026</title>
+<title>EcoSystem-Phone</title>
 
 <style>
     /* ===================== RESET & CORE ===================== */
@@ -1280,7 +1280,115 @@
     #eco-chat-panel { width: calc(100vw - 24px); right: 12px; bottom: 90px; }
     #eco-chat-fab { right: 16px; bottom: 16px; }
   }
+
+  /* ===== API KEY MODAL ===== */
+  #eco-apikey-overlay {
+    position: fixed; inset: 0; z-index: 10000;
+    background: rgba(6, 8, 15, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  #eco-apikey-overlay.visible { opacity: 1; pointer-events: all; }
+
+  #eco-apikey-modal {
+    background: linear-gradient(160deg, #1b2142, #0e1224);
+    border: 1px solid rgba(140, 160, 255, 0.25);
+    border-radius: 20px;
+    padding: 2rem 1.75rem;
+    width: min(440px, 92vw);
+    display: flex; flex-direction: column; gap: 1rem;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(102,126,234,0.15);
+    transform: scale(0.9) translateY(16px);
+    transition: transform 0.3s cubic-bezier(.2,.8,.2,1);
+  }
+  #eco-apikey-overlay.visible #eco-apikey-modal {
+    transform: scale(1) translateY(0);
+  }
+
+  .apikey-modal-icon { font-size: 2.4rem; text-align: center; }
+  .apikey-modal-title {
+    font-size: 1.2rem; font-weight: 700; text-align: center;
+    color: #f2f5ff; text-shadow: 0 0 14px rgba(120,140,255,0.5);
+  }
+  .apikey-modal-desc {
+    font-size: 0.83rem; color: #9aa3ff; text-align: center;
+    line-height: 1.65;
+  }
+  .apikey-modal-desc a { color: #a0b4ff; text-decoration: underline; }
+  .apikey-modal-desc code {
+    background: rgba(255,255,255,0.08); padding: 1px 5px;
+    border-radius: 4px; font-size: 0.8em;
+  }
+
+  #eco-apikey-input {
+    width: 100%; padding: 0.7rem 1rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(140,160,255,0.3);
+    border-radius: 12px; color: #e8ecff;
+    font-family: inherit; font-size: 0.9rem;
+    outline: none; transition: border-color 0.25s, box-shadow 0.25s;
+    letter-spacing: 0.04em;
+  }
+  #eco-apikey-input:focus {
+    border-color: rgba(140,160,255,0.65);
+    box-shadow: 0 0 18px rgba(102,126,234,0.3);
+  }
+  #eco-apikey-input::placeholder { color: #4a5280; }
+
+  .apikey-error {
+    font-size: 0.78rem; color: #ff6b81; text-align: center;
+    min-height: 1.1em;
+  }
+  .apikey-modal-actions { display: flex; gap: 0.65rem; }
+
+  #eco-apikey-save {
+    flex: 1; padding: 0.7rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none; border-radius: 12px;
+    color: #fff; font-family: inherit; font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: opacity 0.2s, transform 0.2s;
+    box-shadow: 0 4px 18px rgba(102,126,234,0.4);
+  }
+  #eco-apikey-save:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  #eco-apikey-cancel {
+    padding: 0.7rem 1.1rem;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(140,160,255,0.2);
+    border-radius: 12px; color: #9aa3ff;
+    font-family: inherit; font-size: 0.9rem;
+    cursor: pointer; transition: background 0.2s;
+  }
+  #eco-apikey-cancel:hover { background: rgba(255,255,255,0.12); }
+
+  .eco-chat-key-btn {
+    background: none; border: none; color: rgba(200,210,255,0.7);
+    cursor: pointer; font-size: 0.85rem; padding: 4px 7px;
+    border-radius: 8px; transition: all 0.2s; flex-shrink: 0;
+    line-height: 1;
+  }
+  .eco-chat-key-btn:hover { color: #fff; background: rgba(255,255,255,0.15); }
 </style>
+
+<!-- API Key Modal -->
+<div id="eco-apikey-overlay" role="dialog" aria-modal="true" aria-labelledby="apikey-title">
+  <div id="eco-apikey-modal">
+    <div class="apikey-modal-icon">🔑</div>
+    <div class="apikey-modal-title" id="apikey-title">Enter your Groq API Key</div>
+    <div class="apikey-modal-desc">
+      Your key is saved only in your browser (<code>localStorage</code>) — never shared anywhere else.<br><br>
+      Get a free key at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>
+    </div>
+    <input id="eco-apikey-input" type="password" placeholder="gsk_••••••••••••••••••••••••" autocomplete="off" spellcheck="false" />
+    <div class="apikey-error" id="eco-apikey-error"></div>
+    <div class="apikey-modal-actions">
+      <button id="eco-apikey-cancel">Cancel</button>
+      <button id="eco-apikey-save">Save &amp; Continue</button>
+    </div>
+  </div>
+</div>
 
 <!-- FAB Toggle Button -->
 <button id="eco-chat-fab" title="Chat with EcoSystem Assistant" aria-label="Open chat">
@@ -1300,6 +1408,7 @@
       <h4>EcoSystem Assistant</h4>
       <span><span class="eco-status-dot"></span> Prof. Rahul M. Samant's Portal</span>
     </div>
+    <button class="eco-chat-key-btn" id="eco-key-btn" title="Set / update Groq API Key">🔑</button>
     <button class="eco-chat-clear-btn" id="eco-clear-btn" title="Clear chat">↺ Clear</button>
   </div>
 
@@ -1319,102 +1428,136 @@
 <script>
 (function () {
   /* ===== CONFIG ===== */
-  const GROQ_API_KEY = "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";
   const GROQ_MODEL   = "llama-3.3-70b-versatile";
   const GROQ_URL     = "https://api.groq.com/openai/v1/chat/completions";
+  const LS_KEY       = "ecosys_groq_api_key";
 
+  /* ===== API KEY HELPERS ===== */
+  const getKey  = () => localStorage.getItem(LS_KEY) || "";
+  const saveKey = k  => localStorage.setItem(LS_KEY, k.trim());
+  const hasKey  = () => getKey().length > 0;
+
+  /* ===== DOM REFS ===== */
+  const fab      = document.getElementById("eco-chat-fab");
+  const panel    = document.getElementById("eco-chat-panel");
+  const messages = document.getElementById("eco-chat-messages");
+  const input    = document.getElementById("eco-chat-input");
+  const sendBtn  = document.getElementById("eco-chat-send");
+  const clearBtn = document.getElementById("eco-clear-btn");
+  const keyBtn   = document.getElementById("eco-key-btn");
+
+  const overlay  = document.getElementById("eco-apikey-overlay");
+  const keyInput = document.getElementById("eco-apikey-input");
+  const saveBtn  = document.getElementById("eco-apikey-save");
+  const cancelBtn= document.getElementById("eco-apikey-cancel");
+  const keyError = document.getElementById("eco-apikey-error");
+
+  /* ===== MODAL LOGIC ===== */
+  let _afterSave = null;
+
+  function openKeyModal(afterSave) {
+    _afterSave = afterSave || null;
+    keyError.textContent = "";
+    keyInput.value = getKey();   // pre-fill existing key (masked)
+    overlay.classList.add("visible");
+    setTimeout(() => keyInput.focus(), 220);
+  }
+
+  function closeKeyModal() {
+    overlay.classList.remove("visible");
+    keyInput.value = "";
+    keyError.textContent = "";
+  }
+
+  saveBtn.addEventListener("click", () => {
+    const val = keyInput.value.trim();
+    if (!val || !val.startsWith("gsk_")) {
+      keyError.textContent = "⚠️ Key must start with gsk_ — please check and retry.";
+      keyInput.focus();
+      return;
+    }
+    saveKey(val);
+    closeKeyModal();
+    if (typeof _afterSave === "function") _afterSave();
+  });
+
+  cancelBtn.addEventListener("click", closeKeyModal);
+  overlay.addEventListener("click", e => { if (e.target === overlay) closeKeyModal(); });
+  keyInput.addEventListener("keydown", e => { if (e.key === "Enter") saveBtn.click(); });
+  keyBtn.addEventListener("click", () => openKeyModal());
+
+  /* ===== SYSTEM PROMPT ===== */
   const SYSTEM_PROMPT = `You are the friendly and helpful AI assistant for EcoSystem 2026, a comprehensive Student Help Portal created by Prof. Rahul M. Samant, HOD-IT at NBNSTIC (Narayan Bhagwantrao Nominal Sanstha Trust Institute of Computer). You speak in a warm, encouraging, and concise tone.
 
 Your role is to help IT students navigate the portal, find resources, and answer academic questions.
 
 === PORTAL OVERVIEW ===
-EcoSystem 2026 has 250+ Mindful Consultations, 150+ Academic Tools, and 100+ Mock Exams & Quizzes. It supports SEIT (SE IT), TEIT (TE IT), and BE IT students.
-
-=== SECTIONS & KEY LINKS ===
+EcoSystem 2026 is a one-stop student portal with 250+ mindful consultations, 150+ academic tools, and 100+ mock exams & quizzes.
 
 1. IDEATION & FEEDBACK
-   - Introduction to EcoSystem (Google Doc)
-   - EcoSystem in Marathi (Drive)
-   - Schedule appointment with Prof. Rahul: https://script.google.com/macros/s/AKfycbyU5...
-   - Minutes of Meetings, Leave Sanction System, MOM System
-   - Rate your IT Department, Happy Birthday Card Registration
-   - NBNSTIC IT Progress Book (Progress Tracker)
-   - Give feedback form
+   - Brief Introduction to EcoSystem (Google Docs)
+   - AI Tutor for IT Students: https://rms-sof.github.io/AI-Tutor-EcoSystem/
+   - EcoSystem Desktop Version: https://rms-sof.github.io/New-EcoSystem/
+   - EcoSystem मराठीतून ओळख (Marathi intro)
+   - Schedule appointment with Prof. Rahul
+   - Minutes of Meetings system
+   - Feedback form
+   - Leave Sanction System
 
 2. ONLINE SUBMISSIONS
-   - BE Sem 7 Academic Progress Tracker
-   - BE Sem 8 Academic Progress Tracker
-   - Upload theory assignments
-   - Track Theory Assignment Status
+   - BE Sem 7 & Sem 8 Progress Trackers
+   - Theory assignment uploads (Google Script)
+   - SEIT 2024 EVS & UHVPE assignments
+   - Track Assignment Status
    - Apply for BE IT Submission Ticket
-   - Subjects: ISR, Deep Learning (DL), Smart Computing (SMC), Distributed Systems (DS), Social Computing (SOC), EVS, UHVPE
 
-3. ENHANCE YOURSELF
-   - Student Advisory for Good Academic Life (YouTube)
-   - Importance of Regular Attendance (YouTube)
-   - Professional help videos on Universal Human Values, Harmony in Coding, Management Principles
-   - Addiction videos: How games & reels are made addictive
-   - Health & Happiness: https://rms-sof.github.io/Healthy-Happy/
+3. SELF-ENHANCEMENT
+   - Personal Excellence Model (PEM) videos
+   - Student Advisory videos
+   - Growth mindset, digital wellness, stress management
+   - Dopamine detox games
 
 4. ACADEMIC RESOURCES
    - Submission Schedules & Calendars
-   - IT Skills Map
    - Current Timetable (Google Sheets)
-   - Current Academic Calendar
-   - Mark your Presence / Check your Presence
-   - IT Course Entire Syllabus
+   - Academic Calendar
+   - IT Skills Map
+   - Mark/Check Presence
+   - IT Course Syllabus (Google Forms)
    - NBNSTIC-IT Newsletters
-   - Apply for leave
 
 5. ALGORITHMS BY VISUALIZATION
-   - Learning Concepts & Algorithms using Animations: https://rms-sof.github.io/Concepts-Animations/
+   - Animated concepts: https://rms-sof.github.io/Concepts-Animations/
 
 6. HISTORICAL TIMELINES
-   - ISR Historical Timeline (YouTube)
-   - Deep Learning Historical Timeline: https://rms-sof.github.io/DL-TimeLine/
+   - ISR Timeline (YouTube)
+   - Deep Learning Timeline: https://rms-sof.github.io/DL-TimeLine/
 
-7. CONCEPT VIDEOS (YouTube Playlists by Prof. Rahul)
-   - Distributed Systems (DS) - BE VIII
-   - SNE - BE VIII
-   - Social Computing (SOC) - BE VIII
-   - BAI - BE VIII
-   - ISR - BE VII
-   - Deep Learning (DL) - BE VII
-   - Smart Computing (SMC) - BE VII
-   - SPM - BE VII, DevOps - BE VII
-   - TOC - TE V, Machine Learning (ML) - TE V
-   - DSBDA - TE VI, WAD - TE, DBMS - SE IV, Software Engineering - SE IV
+7. CONCEPT VIDEOS (YouTube playlists)
+   - DS, SNE, SOC, BAI (BE-VIII)
+   - ISR, DL, SMC, SPM, DevOps (BE-VII)
+   - TOC, ML (TE-V), DSBDA, WAD (TE-VI)
+   - DBMS, Software Engg (SE-IV)
 
 8. SUBJECT OVERVIEW BY AI
-   - ML, SMC, SOC, ISR, DL, DSBDA, TOC, DS, CNS, WAD, DevOps, SDM, SE, PM, SPM, Maths in Computing, Digital Library
-   - AI Evolution, Agentic AI Education, BIA, GenAI
-   - Links: https://rms-sof.github.io/[subject]-ai/ pattern
+   - AI-generated subject overviews for each IT subject
 
 9. LAB MANUALS
-   - ISR, Deep Learning, Distributed Systems, SNE, BIA, Cloud Computing, ML, DSBDA, WAD, CG, ADBMS — all BE 2019 pat journals on Google Drive
+   - All available at: https://rms-sof.github.io/[Subject]-Lab/
 
-10. SUBJECTIVE EXAMS (Mock Theory)
-    - Mock theory BE IT exam
-    - ML Subjective (30 marks, 1hr)
-    - DSBDA Subjective (30 marks, 1hr)
-    - DL Subjective (30 marks, 1hr)
-    - ISR Subjective (30 marks, 1hr)
-    - BIA Unit 1-2 Theory Exam
-    - SEIT DSA CCA Unit 6 Test, SEIT OOP CCA Unit 6 Test
+10. PERSONALIZED LEARNING PATHS
+    - Custom study paths for each subject/semester
 
-11. MOCK ORAL / VIVA EXAMS
-    - BE Oral: BIA, Project, ISR, SNE Mock Viva
-    - SE Oral: OOP, CEP/MiniProject Mock Viva
-    - TE Oral: Seminar, Internship Mock Viva
-    - CG SE 2024 Pat Oral: https://rms-sof.github.io/CG-Oral-Prep/
-    - BIA BE Oral Prep: https://rms-sof.github.io/BIA-oral-prep/
+11. STRESS MANAGEMENT & MENTAL HEALTH
+    - Stress busters, mindfulness resources
+    - Professional help videos series
+    - Health & Happiness: https://rms-sof.github.io/Healthy-Happy/
 
-12. PERSONALIZED LEARNING
-    - What is Personalized Learning? (YouTube)
-    - Course materials for DL, ISR, SOC, SMC, DSBDA, ML, SPM, DS
-    - Gamified Lesson Plans for ISR & DL
-    - Flipped Classroom sessions
-    - Core IT Thinking Skills, Life Lessons from Computing, Digital Library
+12. EXAMINATIONS
+    - Subjective Exams (written)
+    - Oral / Viva Exams
+    - Mock MCQ Exams (online)
+    - Location-Bound Proctored MCQ (NBNSTIC campus only)
 
 13. SPECIAL CS TOPICS
     - Maths: Distributions, Statistical Tests
@@ -1484,14 +1627,6 @@ EcoSystem 2026 has 250+ Mindful Consultations, 150+ Academic Tools, and 100+ Moc
   let chatHistory = [];
   let isProcessing = false;
 
-  /* ===== DOM ===== */
-  const fab       = document.getElementById("eco-chat-fab");
-  const panel     = document.getElementById("eco-chat-panel");
-  const messages  = document.getElementById("eco-chat-messages");
-  const input     = document.getElementById("eco-chat-input");
-  const sendBtn   = document.getElementById("eco-chat-send");
-  const clearBtn  = document.getElementById("eco-clear-btn");
-
   /* ===== HELPERS ===== */
   function appendMessage(role, html) {
     const div = document.createElement("div");
@@ -1556,7 +1691,7 @@ EcoSystem 2026 has 250+ Mindful Consultations, 150+ Academic Tools, and 100+ Moc
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer " + GROQ_API_KEY
+        "Authorization": "Bearer " + getKey()
       },
       body: JSON.stringify({
         model: GROQ_MODEL,
@@ -1569,6 +1704,10 @@ EcoSystem 2026 has 250+ Mindful Consultations, 150+ Academic Tools, and 100+ Moc
       })
     });
 
+    if (response.status === 401) {
+      localStorage.removeItem(LS_KEY);   // wipe bad key
+      throw new Error("invalid_key");
+    }
     if (!response.ok) {
       const err = await response.json().catch(() => ({}));
       throw new Error(err?.error?.message || "API error " + response.status);
@@ -1577,8 +1716,6 @@ EcoSystem 2026 has 250+ Mindful Consultations, 150+ Academic Tools, and 100+ Moc
     const data = await response.json();
     const reply = data.choices?.[0]?.message?.content || "Sorry, I couldn't generate a response.";
     chatHistory.push({ role: "assistant", content: reply });
-
-    // Keep history manageable (last 16 exchanges)
     if (chatHistory.length > 32) chatHistory = chatHistory.slice(-32);
     return reply;
   }
@@ -1587,6 +1724,12 @@ EcoSystem 2026 has 250+ Mindful Consultations, 150+ Academic Tools, and 100+ Moc
   async function sendMessage(text) {
     text = (text || input.value).trim();
     if (!text || isProcessing) return;
+
+    // Require key before sending
+    if (!hasKey()) {
+      openKeyModal(() => sendMessage(text));
+      return;
+    }
 
     isProcessing = true;
     sendBtn.disabled = true;
@@ -1602,7 +1745,12 @@ EcoSystem 2026 has 250+ Mindful Consultations, 150+ Academic Tools, and 100+ Moc
       appendMessage("bot", simpleMarkdown(reply));
     } catch (err) {
       hideTyping();
-      appendMessage("bot", "⚠️ <strong>Oops!</strong> " + simpleMarkdown(err.message) + "<br><small>Please check your connection and try again.</small>");
+      if (err.message === "invalid_key") {
+        appendMessage("bot", "🔑 <strong>Invalid API key.</strong> Please enter a valid Groq key and try again.");
+        openKeyModal(() => sendMessage(text));
+      } else {
+        appendMessage("bot", "⚠️ <strong>Oops!</strong> " + simpleMarkdown(err.message) + "<br><small>Please check your connection and try again.</small>");
+      }
     }
 
     isProcessing = false;
@@ -1615,7 +1763,10 @@ EcoSystem 2026 has 250+ Mindful Consultations, 150+ Academic Tools, and 100+ Moc
     const isOpen = panel.classList.toggle("visible");
     fab.classList.toggle("open", isOpen);
     if (isOpen) {
-      if (!messages.children.length) showWelcome();
+      if (!messages.children.length) {
+        showWelcome();
+        if (!hasKey()) openKeyModal();   // prompt for key on very first open
+      }
       setTimeout(() => input.focus(), 300);
     }
   });
