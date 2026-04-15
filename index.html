@@ -916,54 +916,59 @@
 <script>
     const searchInput = document.getElementById("searchInput");
     const micBtn = document.getElementById("micBtn");
-    let isListening = false; // Flag to track state
+    const DEFAULT_SEARCH_PLACEHOLDER = "Search resources...";
+    const cardIndex = Array.from(document.querySelectorAll(".card"), (card) => {
+        const title = card.querySelector(".card-title")?.textContent.toLowerCase() || "";
+        const desc = card.querySelector(".card-description")?.textContent.toLowerCase() || "";
+        const links = Array.from(card.querySelectorAll(".link-item"), (link) => ({
+            element: link,
+            text: link.textContent.toLowerCase()
+        }));
+
+        return {
+            card,
+            headerText: `${title} ${desc}`.trim(),
+            links
+        };
+    });
+    let isListening = false;
+
+    function resetSearchPlaceholder() {
+        if (!isListening && searchInput.value.trim() === "") {
+            searchInput.placeholder = DEFAULT_SEARCH_PLACEHOLDER;
+        }
+    }
 
     /* =========================================
        CORE SEARCH LOGIC
        ========================================= */
     function performSearch(query) {
-        query = query.toLowerCase().trim();
-        const cards = document.querySelectorAll(".card");
+        const normalizedQuery = query.toLowerCase().trim();
+        const showAll = normalizedQuery === "";
 
-        cards.forEach(card => {
-            let cardMatch = false;
-
-            // 1. Check Card Header (Title & Description)
-            const title = card.querySelector(".card-title")?.innerText.toLowerCase() || "";
-            const desc = card.querySelector(".card-description")?.innerText.toLowerCase() || "";
-            
-            if (title.includes(query) || desc.includes(query)) {
-                cardMatch = true;
-            }
-
-            // 2. Check Individual Links
-            const links = card.querySelectorAll(".link-item");
+        cardIndex.forEach(({ card, headerText, links }) => {
+            const cardMatch = showAll || headerText.includes(normalizedQuery);
             let linkMatch = false;
 
-            links.forEach(link => {
-                const linkText = link.innerText.toLowerCase();
-                // If query is empty, show all links; otherwise filter
-                if (query === "" || linkText.includes(query)) {
-                    link.style.display = "block";
-                    if (query !== "") linkMatch = true;
-                } else {
-                    link.style.display = "none";
+            links.forEach(({ element, text }) => {
+                const shouldShowLink = showAll || text.includes(normalizedQuery);
+                element.style.display = shouldShowLink ? "block" : "none";
+
+                if (!showAll && shouldShowLink) {
+                    linkMatch = true;
                 }
             });
 
-            // 3. Toggle Card Visibility
-            // Show card if search is empty OR if (header matches OR any link matches)
-            if (query === "") {
-                card.style.display = "flex"; 
-            } else {
-                card.style.display = (cardMatch || linkMatch) ? "flex" : "none";
-            }
+            card.style.display = cardMatch || linkMatch ? "flex" : "none";
         });
     }
 
+    searchInput.placeholder = DEFAULT_SEARCH_PLACEHOLDER;
+
     // Event Listener: Type to Search
-    searchInput.addEventListener("keyup", function () {
+    searchInput.addEventListener("input", function () {
         performSearch(this.value);
+        resetSearchPlaceholder();
     });
 
     /* =========================================
@@ -1001,11 +1006,7 @@
             isListening = false;
             micBtn.classList.remove("listening");
             searchInput.classList.remove("listening-mode");
-            
-            // Restore placeholder if empty
-            if (searchInput.value.trim() === '') {
-                searchInput.placeholder = "Search resources...";
-            }
+            resetSearchPlaceholder();
         };
 
         recognition.onresult = function (event) {
@@ -1034,11 +1035,7 @@
             }
 
             // Reset placeholder after delay
-            setTimeout(() => {
-                if(!isListening && searchInput.value === '') {
-                    searchInput.placeholder = "Search resources...";
-                }
-            }, 3000);
+            setTimeout(resetSearchPlaceholder, 3000);
         };
 
     } else {
